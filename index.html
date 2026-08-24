@@ -414,52 +414,137 @@ body.intro-lock{overflow:hidden}
 
 <script>
 /*
-  EASY SHOW STATUS CONTROL
-  Change only the value below when you need to update the website:
-  'preseason' = season has not started
-  'open'      = show is running tonight
-  'delay'     = delayed / weather hold
-  'off'       = show is off tonight
+  SPECTRAL LIGHTS SHOW STATUS
+
+  Normal setting:
+    const manualOverride = 'auto';
+
+  Emergency/manual choices:
+    'delay'   = delayed / weather hold
+    'off'     = canceled / off tonight
+    'offline' = temporarily offline
+    'open'    = force show running
+
+  When set to 'auto', the website follows this schedule:
+    Halloween season: September 25 through November 1, 2026
+    Nightly hours: 6:30 PM through 11:00 PM
+    Time zone: Statham, Georgia (America/New_York)
 */
 (function(){
-  const showStatus = 'preseason';
+  const manualOverride = 'auto';
+
+  const card = document.getElementById('showStatusCard');
+  const textEl = document.getElementById('showStatusText');
+  const badgeEl = document.getElementById('showStatusBadge');
+  const noteEl = document.getElementById('showStatusNote');
+  if(!card || !textEl || !badgeEl || !noteEl) return;
 
   const states = {
     preseason:{
       className:'status-preseason',
       text:'Season Not Open Yet',
       badge:'PRE-SEASON',
-      note:'Halloween opening night is September 25, 2026. Check back here for nightly operating updates.'
+      note:'Halloween opening night is September 25, 2026. Nightly show hours are planned for 6:30 PM–11:00 PM.'
+    },
+    before:{
+      className:'status-preseason',
+      text:'Show Opens Tonight at 6:30 PM',
+      badge:'OPENS TONIGHT',
+      note:'Spectral Lights is scheduled to run tonight from 6:30 PM until 11:00 PM.'
     },
     open:{
       className:'status-open',
       text:'Show Is Running Tonight',
-      badge:'OPEN TONIGHT',
-      note:'Spectral Lights is running tonight. Please remain in your vehicle and do not block neighboring driveways.'
+      badge:'OPEN NOW',
+      note:'Spectral Lights is running now until 11:00 PM. Please remain in your vehicle and do not block neighboring driveways.'
+    },
+    closed:{
+      className:'status-off',
+      text:'Show Closed for Tonight',
+      badge:'CLOSED TONIGHT',
+      note:'Tonight’s show has ended. Spectral Lights is scheduled to open again at 6:30 PM on the next show night.'
     },
     delay:{
       className:'status-delay',
       text:'Show Delayed',
       badge:'DELAYED',
-      note:'Tonight’s show is temporarily delayed. Please check back for an update before heading out.'
+      note:'Tonight’s show is temporarily delayed. Please check back here for an update before heading out.'
     },
     off:{
       className:'status-off',
       text:'Show Is Off Tonight',
-      badge:'OFF TONIGHT',
+      badge:'CANCELED TONIGHT',
       note:'Spectral Lights will not be running tonight. Please check back for the next show update.'
+    },
+    offline:{
+      className:'status-delay',
+      text:'Temporarily Offline',
+      badge:'TEMPORARILY OFFLINE',
+      note:'The show is temporarily offline due to an unexpected issue. Please check back for an update.'
+    },
+    complete:{
+      className:'status-preseason',
+      text:'Halloween Season Complete',
+      badge:'SEASON COMPLETE',
+      note:'Thank you for visiting Spectral Lights during the 2026 Halloween season.'
     }
   };
 
-  const s = states[showStatus] || states.preseason;
-  const card = document.getElementById('showStatusCard');
-  if(!card) return;
+  function setState(key){
+    const s = states[key] || states.preseason;
+    card.classList.remove('status-preseason','status-open','status-delay','status-off');
+    card.classList.add(s.className);
+    textEl.textContent = s.text;
+    badgeEl.textContent = s.badge;
+    noteEl.textContent = s.note;
+  }
 
-  card.classList.remove('status-preseason','status-open','status-delay','status-off');
-  card.classList.add(s.className);
-  document.getElementById('showStatusText').textContent = s.text;
-  document.getElementById('showStatusBadge').textContent = s.badge;
-  document.getElementById('showStatusNote').textContent = s.note;
+  if(manualOverride !== 'auto'){
+    setState(manualOverride);
+    return;
+  }
+
+  // Convert the visitor's current moment into Statham/Atlanta local date and time.
+  const now = new Date();
+  const parts = new Intl.DateTimeFormat('en-US',{
+    timeZone:'America/New_York',
+    year:'numeric',month:'2-digit',day:'2-digit',
+    hour:'2-digit',minute:'2-digit',second:'2-digit',
+    hour12:false
+  }).formatToParts(now);
+
+  const get = type => Number(parts.find(p => p.type === type)?.value);
+  const year = get('year');
+  const month = get('month');
+  const day = get('day');
+  const hour = get('hour');
+  const minute = get('minute');
+
+  const ymd = year * 10000 + month * 100 + day;
+  const seasonStart = 20260925;
+  const seasonEnd = 20261101;
+
+  if(ymd < seasonStart){
+    setState('preseason');
+    return;
+  }
+
+  if(ymd > seasonEnd){
+    setState('complete');
+    return;
+  }
+
+  const minutesNow = hour * 60 + minute;
+  const openTime = 18 * 60 + 30;  // 6:30 PM
+  const closeTime = 23 * 60;      // 11:00 PM
+
+  if(minutesNow < openTime){
+    setState('before');
+  }else if(minutesNow < closeTime){
+    setState('open');
+  }else{
+    setState('closed');
+  }
 })();
 </script>
 
