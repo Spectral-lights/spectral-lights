@@ -108,9 +108,74 @@ footer{text-align:center;color:#8f8f9a;padding:34px 0 50px}.season-pill{display:
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}.halloween-effects,.pumpkin,.lightning{display:none!important}}
 @media(max-width:780px){.grid,.two{grid-template-columns:1fr}.card{padding:20px}.hero{padding-top:12px}.moon-glow{width:120px;height:120px;right:-15px;top:72px}.pumpkin{font-size:32px}.ghost{font-size:44px}}
 
+
+/* Halloween opening intro */
+.intro-screen{
+  position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 50% 35%,rgba(77,28,110,.28),transparent 34%),
+             linear-gradient(180deg,#020205 0%,#07040d 62%,#020203 100%);
+  overflow:hidden;transition:opacity .7s ease,visibility .7s ease
+}
+.intro-screen.hide{opacity:0;visibility:hidden;pointer-events:none}
+.intro-fog{
+  position:absolute;left:-20%;bottom:-7%;width:140%;height:34%;border-radius:50%;
+  background:radial-gradient(ellipse at center,rgba(210,195,230,.17),rgba(120,85,145,.08) 42%,transparent 72%);
+  filter:blur(24px);opacity:.75;animation:introFog 5s ease-in-out infinite alternate
+}
+@keyframes introFog{from{transform:translateX(-5%) scaleX(1)}to{transform:translateX(7%) scaleX(1.08)}}
+.intro-lightning{position:absolute;inset:0;background:rgba(205,190,255,.28);opacity:0;animation:introFlash 4s ease-out forwards}
+@keyframes introFlash{0%,18%,21%,47%,50%,100%{opacity:0}19%{opacity:.32}20%{opacity:.05}48%{opacity:.18}49%{opacity:0}}
+.intro-content{position:relative;z-index:2;text-align:center;width:min(720px,88vw)}
+.intro-logo{
+  width:min(430px,82vw);border-radius:24px;opacity:0;transform:scale(.93);
+  animation:introLogo 4s ease forwards;box-shadow:0 0 0 rgba(154,77,255,0)
+}
+@keyframes introLogo{
+  0%,20%{opacity:0;transform:scale(.93)}
+  28%{opacity:1;transform:scale(.98);box-shadow:0 0 18px rgba(154,77,255,.16)}
+  55%,100%{opacity:1;transform:scale(1);box-shadow:0 0 48px rgba(154,77,255,.34),0 0 28px rgba(255,134,31,.14)}
+}
+.intro-bulbs{margin:18px auto 10px;display:flex;justify-content:center;gap:12px;opacity:0;animation:introBulbRow 4s ease forwards}
+.intro-bulbs span{
+  width:16px;height:25px;border-radius:48% 48% 58% 58%;background:var(--c);
+  box-shadow:0 0 10px var(--c),0 0 22px var(--c);opacity:.2;animation:introBulbOn .9s ease forwards
+}
+.intro-bulbs span:nth-child(1){--c:#ff4b31;animation-delay:1.95s}
+.intro-bulbs span:nth-child(2){--c:#ffb229;animation-delay:2.08s}
+.intro-bulbs span:nth-child(3){--c:#65f44a;animation-delay:2.21s}
+.intro-bulbs span:nth-child(4){--c:#8b5cff;animation-delay:2.34s}
+.intro-bulbs span:nth-child(5){--c:#38bfff;animation-delay:2.47s}
+.intro-bulbs span:nth-child(6){--c:#ff4b31;animation-delay:2.60s}
+.intro-bulbs span:nth-child(7){--c:#ffb229;animation-delay:2.73s}
+.intro-bulbs span:nth-child(8){--c:#65f44a;animation-delay:2.86s}
+@keyframes introBulbRow{0%,44%{opacity:0}48%,100%{opacity:1}}
+@keyframes introBulbOn{to{opacity:1;filter:brightness(1.4)}}
+.intro-title{
+  margin:10px 0 0;font-size:clamp(1.3rem,5vw,2.5rem);font-weight:950;
+  text-transform:uppercase;letter-spacing:.08em;color:#f5e9ff;opacity:0;
+  text-shadow:0 0 15px rgba(154,77,255,.45);animation:introTitle 4s ease forwards
+}
+@keyframes introTitle{0%,68%{opacity:0;transform:translateY(8px)}78%,100%{opacity:1;transform:translateY(0)}}
+body.intro-lock{overflow:hidden}
+@media(prefers-reduced-motion:reduce){.intro-screen{display:none!important}}
+
 </style>
 </head>
-<body>
+<body class="intro-lock">
+
+<div id="introScreen" class="intro-screen" aria-hidden="true">
+  <div class="intro-lightning"></div>
+  <div class="intro-fog"></div>
+  <div class="intro-content">
+    <img class="intro-logo" src="spectral-lights-logo.jpeg" alt="">
+    <div class="intro-bulbs" aria-hidden="true">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span>
+    </div>
+    <div class="intro-title">The Haunting Begins...</div>
+  </div>
+</div>
+
 <div class="halloween-effects" aria-hidden="true">
   <div class="moon-glow"></div>
   <div class="bat b1">🦇</div>
@@ -270,6 +335,33 @@ footer{text-align:center;color:#8f8f9a;padding:34px 0 50px}.season-pill{display:
   }
   updateCountdown();
   setInterval(updateCountdown,1000);
+})();
+</script>
+
+
+<script>
+(function(){
+  const intro = document.getElementById('introScreen');
+  if(!intro){ document.body.classList.remove('intro-lock'); return; }
+
+  let alreadyPlayed = false;
+  try{
+    alreadyPlayed = sessionStorage.getItem('spectralIntroPlayed') === '1';
+  }catch(e){}
+
+  if(alreadyPlayed){
+    intro.remove();
+    document.body.classList.remove('intro-lock');
+    return;
+  }
+
+  try{ sessionStorage.setItem('spectralIntroPlayed','1'); }catch(e){}
+
+  setTimeout(()=>{
+    intro.classList.add('hide');
+    document.body.classList.remove('intro-lock');
+    setTimeout(()=>intro.remove(),800);
+  },4000);
 })();
 </script>
 
