@@ -159,6 +159,35 @@ footer{text-align:center;color:#8f8f9a;padding:34px 0 50px}.season-pill{display:
 body.intro-lock{overflow:hidden}
 @media(prefers-reduced-motion:reduce){.intro-screen{display:none!important}}
 
+
+/* Show status */
+.show-status-card{
+  margin-top:20px;
+  background:linear-gradient(135deg,rgba(15,18,24,.96),rgba(40,18,57,.78));
+  border:1px solid rgba(255,255,255,.14);
+}
+.show-status-wrap{
+  display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap
+}
+.show-status-main{display:flex;align-items:center;gap:14px}
+.show-status-light{
+  width:18px;height:18px;border-radius:50%;background:#888;
+  box-shadow:0 0 12px rgba(255,255,255,.15);flex:0 0 auto
+}
+.show-status-label{
+  text-transform:uppercase;letter-spacing:.12em;font-size:.72rem;font-weight:900;color:var(--muted)
+}
+.show-status-text{font-size:clamp(1.35rem,4vw,2rem);font-weight:950;margin-top:2px}
+.show-status-note{margin:8px 0 0;color:var(--muted);line-height:1.5}
+.status-open .show-status-light{background:#69ff4a;box-shadow:0 0 12px #69ff4a,0 0 26px rgba(105,255,74,.65)}
+.status-delay .show-status-light{background:#ffb229;box-shadow:0 0 12px #ffb229,0 0 26px rgba(255,178,41,.6)}
+.status-off .show-status-light{background:#ff4b31;box-shadow:0 0 12px #ff4b31,0 0 26px rgba(255,75,49,.58)}
+.status-preseason .show-status-light{background:#8b5cff;box-shadow:0 0 12px #8b5cff,0 0 26px rgba(139,92,255,.6)}
+.status-badge{
+  padding:9px 13px;border-radius:999px;font-weight:900;font-size:.78rem;
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05)
+}
+
 </style>
 </head>
 <body class="intro-lock">
@@ -253,6 +282,23 @@ body.intro-lock{overflow:hidden}
       <div class="open-small">Spectral Lights Presents</div>
       <div class="open-big">Halloween Show<br>Is Now Open!</div>
       <p class="open-sub">👻 Come enjoy the lights, music & Halloween magic! 🦇</p>
+    </div>
+  </div>
+</section>
+
+
+<section id="show-status">
+  <div class="card show-status-card status-preseason" id="showStatusCard">
+    <div class="show-status-wrap">
+      <div class="show-status-main">
+        <div class="show-status-light" aria-hidden="true"></div>
+        <div>
+          <div class="show-status-label">Tonight's Show Status</div>
+          <div class="show-status-text" id="showStatusText">Season Not Open Yet</div>
+          <p class="show-status-note" id="showStatusNote">Halloween opening night is September 25, 2026. Check back here for nightly operating updates.</p>
+        </div>
+      </div>
+      <div class="status-badge" id="showStatusBadge">PRE-SEASON</div>
     </div>
   </div>
 </section>
@@ -362,6 +408,58 @@ body.intro-lock{overflow:hidden}
     document.body.classList.remove('intro-lock');
     setTimeout(()=>intro.remove(),800);
   },6000);
+})();
+</script>
+
+
+<script>
+/*
+  EASY SHOW STATUS CONTROL
+  Change only the value below when you need to update the website:
+  'preseason' = season has not started
+  'open'      = show is running tonight
+  'delay'     = delayed / weather hold
+  'off'       = show is off tonight
+*/
+(function(){
+  const showStatus = 'preseason';
+
+  const states = {
+    preseason:{
+      className:'status-preseason',
+      text:'Season Not Open Yet',
+      badge:'PRE-SEASON',
+      note:'Halloween opening night is September 25, 2026. Check back here for nightly operating updates.'
+    },
+    open:{
+      className:'status-open',
+      text:'Show Is Running Tonight',
+      badge:'OPEN TONIGHT',
+      note:'Spectral Lights is running tonight. Please remain in your vehicle and do not block neighboring driveways.'
+    },
+    delay:{
+      className:'status-delay',
+      text:'Show Delayed',
+      badge:'DELAYED',
+      note:'Tonight’s show is temporarily delayed. Please check back for an update before heading out.'
+    },
+    off:{
+      className:'status-off',
+      text:'Show Is Off Tonight',
+      badge:'OFF TONIGHT',
+      note:'Spectral Lights will not be running tonight. Please check back for the next show update.'
+    }
+  };
+
+  const s = states[showStatus] || states.preseason;
+  const card = document.getElementById('showStatusCard');
+  if(!card) return;
+
+  card.classList.remove('status-preseason','status-open','status-delay','status-off');
+  card.classList.add(s.className);
+  document.getElementById('showStatusText').textContent = s.text;
+  document.getElementById('showStatusBadge').textContent = s.badge;
+  document.getElementById('showStatusNote').textContent = s.note;
 })();
 </script>
 
