@@ -188,6 +188,16 @@ body.intro-lock{overflow:hidden}
   border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05)
 }
 
+
+/* Before You Visit */
+.visit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}
+.visit-item{padding:18px;border-radius:18px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.11)}
+.visit-icon{font-size:1.65rem;display:block;margin-bottom:8px;filter:drop-shadow(0 0 8px rgba(154,77,255,.45))}
+.visit-item h3{margin:0 0 7px;font-size:1.02rem}
+.visit-item p{margin:0;color:var(--muted);line-height:1.5;font-size:.94rem}
+@media(max-width:820px){.visit-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.visit-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body class="intro-lock">
@@ -316,11 +326,18 @@ body.intro-lock{overflow:hidden}
   </div>
 </section>
 
-<section>
+<section id="before-you-visit">
   <div class="card">
-    <h2 class="section-title">🚗 Visiting the Show</h2>
-    <div class="rule"><strong>Please do not block neighboring driveways.</strong> Help us be good neighbors so everyone can enjoy the show throughout the season.</div>
-    <p class="small" style="margin-bottom:0">For privacy, the website currently lists only Statham, Georgia. More visitor information will be shared closer to opening night.</p>
+    <h2 class="section-title">🎃 Before You Visit</h2>
+    <p class="small">A few quick things to know before coming to Spectral Lights.</p>
+    <div class="visit-grid">
+      <div class="visit-item"><span class="visit-icon">🚗</span><h3>Drive-By Light Show</h3><p>Enjoy the synchronized display from your vehicle.</p></div>
+      <div class="visit-item"><span class="visit-icon">📻</span><h3>Tune to 97.5 FM</h3><p>Listen to the synchronized soundtrack through your car radio.</p></div>
+      <div class="visit-item"><span class="visit-icon">🕡</span><h3>Show Hours</h3><p>Planned nightly hours are 6:30 PM–11:00 PM.</p></div>
+      <div class="visit-item"><span class="visit-icon">📍</span><h3>Statham, Georgia</h3><p>Exact location and driving directions will be posted closer to opening night.</p></div>
+      <div class="visit-item"><span class="visit-icon">🏠</span><h3>Residential Neighborhood</h3><p>Please drive slowly, be courteous to our neighbors, and do not block driveways.</p></div>
+      <div class="visit-item"><span class="visit-icon">🚦</span><h3>Check Show Status</h3><p>Check the website before visiting for delays, cancellations, weather, or equipment issues.</p></div>
+    </div>
   </div>
 </section>
 
