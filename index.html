@@ -123,19 +123,19 @@ footer{text-align:center;color:#8f8f9a;padding:34px 0 50px}.season-pill{display:
   filter:blur(24px);opacity:.75;animation:introFog 5s ease-in-out infinite alternate
 }
 @keyframes introFog{from{transform:translateX(-5%) scaleX(1)}to{transform:translateX(7%) scaleX(1.08)}}
-.intro-lightning{position:absolute;inset:0;background:rgba(205,190,255,.28);opacity:0;animation:introFlash 4s ease-out forwards}
+.intro-lightning{position:absolute;inset:0;background:rgba(205,190,255,.28);opacity:0;animation:introFlash 6s ease-out forwards}
 @keyframes introFlash{0%,18%,21%,47%,50%,100%{opacity:0}19%{opacity:.32}20%{opacity:.05}48%{opacity:.18}49%{opacity:0}}
 .intro-content{position:relative;z-index:2;text-align:center;width:min(720px,88vw)}
 .intro-logo{
   width:min(430px,82vw);border-radius:24px;opacity:0;transform:scale(.93);
-  animation:introLogo 4s ease forwards;box-shadow:0 0 0 rgba(154,77,255,0)
+  animation:introLogo 6s ease forwards;box-shadow:0 0 0 rgba(154,77,255,0)
 }
 @keyframes introLogo{
   0%,20%{opacity:0;transform:scale(.93)}
   28%{opacity:1;transform:scale(.98);box-shadow:0 0 18px rgba(154,77,255,.16)}
   55%,100%{opacity:1;transform:scale(1);box-shadow:0 0 48px rgba(154,77,255,.34),0 0 28px rgba(255,134,31,.14)}
 }
-.intro-bulbs{margin:18px auto 10px;display:flex;justify-content:center;gap:12px;opacity:0;animation:introBulbRow 4s ease forwards}
+.intro-bulbs{margin:18px auto 10px;display:flex;justify-content:center;gap:12px;opacity:0;animation:introBulbRow 6s ease forwards}
 .intro-bulbs span{
   width:16px;height:25px;border-radius:48% 48% 58% 58%;background:var(--c);
   box-shadow:0 0 10px var(--c),0 0 22px var(--c);opacity:.2;animation:introBulbOn .9s ease forwards
@@ -153,7 +153,7 @@ footer{text-align:center;color:#8f8f9a;padding:34px 0 50px}.season-pill{display:
 .intro-title{
   margin:10px 0 0;font-size:clamp(1.3rem,5vw,2.5rem);font-weight:950;
   text-transform:uppercase;letter-spacing:.08em;color:#f5e9ff;opacity:0;
-  text-shadow:0 0 15px rgba(154,77,255,.45);animation:introTitle 4s ease forwards
+  text-shadow:0 0 15px rgba(154,77,255,.45);animation:introTitle 6s ease forwards
 }
 @keyframes introTitle{0%,68%{opacity:0;transform:translateY(8px)}78%,100%{opacity:1;transform:translateY(0)}}
 body.intro-lock{overflow:hidden}
@@ -361,7 +361,7 @@ body.intro-lock{overflow:hidden}
     intro.classList.add('hide');
     document.body.classList.remove('intro-lock');
     setTimeout(()=>intro.remove(),800);
-  },4000);
+  },6000);
 })();
 </script>
 
