@@ -1,0 +1,619 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#09070d"><title>Spectral Lights Control Center</title>
+<style>body{margin:0;background:#09070d;color:#fff;font-family:system-ui}header,main{max-width:900px;margin:auto;padding:16px}.hero,.card{background:#17111e;border:1px solid #392747;border-radius:16px;padding:14px;margin:10px 0}.brand{font-size:24px;font-weight:900}.brand b{color:#b14cff}.stats,.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stat{text-align:center;background:#0e0b13;padding:10px;border-radius:12px}.stat strong{font-size:21px;display:block}.muted{color:#b8aabe;font-size:12px}.tabs button,button{background:#24172e;color:#fff;border:1px solid #503264;border-radius:12px;padding:11px;font-weight:700}.tabs button.active{border-color:#b14cff;color:#e6c5ff}.panel{display:none}.panel.active{display:block}.row{display:flex;justify-content:space-between;gap:10px;align-items:center}.ports{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-top:8px}.port{background:#0d0a11;padding:8px;border-radius:9px;font-size:12px}.spare{opacity:.55;border:1px dashed #796b82}select,input,textarea{background:#0d0a11;color:#fff;border:1px solid #493554;border-radius:9px;padding:9px}textarea,input{width:100%;box-sizing:border-box;margin:5px 0}.green{color:#73e34c}.purple{color:#cf8cff}@media(max-width:600px){.stats{grid-template-columns:repeat(2,1fr)}.ports{grid-template-columns:1fr}.tabs{font-size:11px}}</style>
+<style>
+.progressWrap{margin-top:14px}.progressBar{height:12px;background:#2b2033;border-radius:999px;overflow:hidden;border:1px solid #493554}.progressFill{height:100%;background:linear-gradient(90deg,#8d35d0,#ff7a22,#73e34c);width:0;transition:width .25s}.progressLabel{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}.badge{display:inline-block;padding:5px 8px;border-radius:999px;background:#2b2033;color:#d8c7e0;font-size:11px;font-weight:800}.inventoryGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}.invCard{background:#17111e;border:1px solid #392747;border-radius:14px;padding:12px}.invTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.qty{font-size:20px;font-weight:900}.low{color:#ff7a22}.ok{color:#73e34c}.mini{font-size:11px;color:#b8aabe}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.toolbar button{flex:1;min-width:130px}.summaryGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.summaryBox{background:#0e0b13;border:1px solid #33273d;border-radius:12px;padding:10px;text-align:center}.summaryBox b{font-size:18px;display:block}.installPct{font-size:34px;font-weight:900;color:#cf8cff}.installSteps{display:grid;gap:7px;margin-top:10px}.installStep{display:flex;justify-content:space-between;align-items:center;background:#0f0b14;border-radius:10px;padding:9px}.rightSmall{font-size:12px;color:#b8aabe}
+@media(max-width:600px){.inventoryGrid{grid-template-columns:1fr}.summaryGrid{grid-template-columns:1fr}}
+</style>
+
+<style>
+.editgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.editgrid .full{grid-column:1/-1}
+.smallbtn{padding:7px 10px;font-size:12px}
+.danger{background:#4a1620!important;border-color:#7d2435!important}
+.exportbox{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.exportbox button{flex:1;min-width:150px}
+@media(max-width:600px){.editgrid{grid-template-columns:1fr}.editgrid .full{grid-column:auto}}
+</style>
+
+<style>
+.settingsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.settingsGrid label{display:block;font-size:12px;color:#b8aabe}
+.settingsGrid input,.settingsGrid select{margin-top:5px}
+.settingsGrid .full{grid-column:1/-1}
+.notice{background:#251b10;border:1px solid #704b21;color:#ffd7a3;border-radius:12px;padding:10px;font-size:12px}
+.songCard{background:#17111e;border:1px solid #392747;border-radius:14px;padding:12px;margin:8px 0}
+.songMeta{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
+.songMeta select,.songMeta input{width:100%}
+@media(max-width:600px){.settingsGrid,.songMeta{grid-template-columns:1fr}.settingsGrid .full{grid-column:auto}}
+</style>
+
+<style>
+.expenseGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.expenseStat{background:#0e0b13;border:1px solid #33273d;border-radius:12px;padding:10px;text-align:center}
+.expenseStat b{display:block;font-size:20px}
+.expenseRow{background:#17111e;border:1px solid #392747;border-radius:14px;padding:12px;margin:8px 0}
+.expenseMeta{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:7px}
+.money{color:#73e34c;font-weight:900}
+.cat{color:#cf8cff;font-weight:800}
+.receipt{font-size:11px;color:#b8aabe;word-break:break-word}
+@media(max-width:700px){.expenseGrid{grid-template-columns:repeat(2,1fr)}.expenseMeta{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.expenseMeta{grid-template-columns:1fr}}
+</style>
+
+<style>
+.socialGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.socialStat{background:#0e0b13;border:1px solid #33273d;border-radius:12px;padding:10px;text-align:center}
+.socialStat b{display:block;font-size:20px}
+.postCard{background:#17111e;border:1px solid #392747;border-radius:14px;padding:12px;margin:8px 0}
+.postCard .statusDraft{color:#b8aabe}.postCard .statusScheduled{color:#ffb229}.postCard .statusPublished{color:#73e34c}
+.postMeta{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:8px}
+.postCaption{white-space:pre-wrap;background:#0e0b13;border-radius:10px;padding:9px;margin-top:8px;color:#dfd5e4;font-size:12px}
+.calendarStrip{display:flex;gap:7px;overflow-x:auto;padding-bottom:5px}
+.dayChip{min-width:96px;background:#0e0b13;border:1px solid #33273d;border-radius:12px;padding:9px;text-align:center}
+.dayChip b{display:block}.platform{color:#cf8cff;font-weight:800}
+@media(max-width:700px){.socialGrid{grid-template-columns:repeat(2,1fr)}.postMeta{grid-template-columns:1fr}}
+</style>
+<style>
+.nightStats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.nightStat{background:#0e0b13;border:1px solid #33273d;border-radius:12px;padding:10px;text-align:center}.nightStat b{display:block;font-size:20px}.nightCard{background:#17111e;border:1px solid #392747;border-radius:14px;padding:12px;margin:8px 0}.good{color:#73e34c}.warn{color:#ffb229}@media(max-width:650px){.nightStats{grid-template-columns:repeat(2,1fr)}}</style>
+<style>
+:root{--accent:#b14cff;--accent2:#ff7a22;--ok:#73e34c;--warn:#ffb229;--danger:#ff4d5f}
+header{padding-bottom:8px}
+.appShell{max-width:980px;margin:auto}
+.topActions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.quick{background:linear-gradient(135deg,#20142a,#16101d);border:1px solid #4a3158;border-radius:14px;padding:12px;text-align:center;cursor:pointer}
+.quick b{display:block;font-size:13px}.quick span{font-size:20px;display:block;margin-bottom:4px}
+.dashboardGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}
+.dashCard{background:#0f0b14;border:1px solid #33273d;border-radius:14px;padding:12px}
+.dashCard b{display:block;font-size:19px}.dashCard small{color:#b8aabe}
+.navScroller{overflow-x:auto;padding-bottom:5px;scrollbar-width:none}.navScroller::-webkit-scrollbar{display:none}
+.tabs{display:flex!important;gap:7px;min-width:max-content}.tabs button{white-space:nowrap;min-width:92px}
+.toast{position:fixed;left:50%;bottom:78px;transform:translateX(-50%) translateY(20px);background:#1b1322;color:#fff;border:1px solid #5a3c6d;border-radius:999px;padding:10px 14px;font-size:12px;opacity:0;pointer-events:none;transition:.25s;z-index:50}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.fab{position:fixed;right:16px;bottom:72px;width:54px;height:54px;border-radius:50%;border:0;background:linear-gradient(135deg,#8d35d0,#ff7a22);color:#fff;font-size:26px;font-weight:900;box-shadow:0 10px 24px #0008;z-index:40}
+.healthRow{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}.health{background:#0e0b13;border-radius:12px;padding:10px;border:1px solid #33273d}.health .val{font-size:18px;font-weight:900}
+.sectionHead{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.emptyState{padding:18px;text-align:center;color:#b8aabe;border:1px dashed #43334d;border-radius:12px}
+@media(max-width:700px){.topActions{grid-template-columns:repeat(2,1fr)}.dashboardGrid{grid-template-columns:1fr 1fr}.healthRow{grid-template-columns:1fr}}
+@media(max-width:480px){.dashboardGrid{grid-template-columns:1fr}.fab{bottom:82px}}
+</style>
+</head><body>
+<header><div class="brand"><b>SPECTRAL</b> LIGHTS</div><div class="muted">CONTROL CENTER • HALLOWEEN 2026</div></header><main>
+<div class="hero"><div class="row"><div><b class="green">● SHOW BUILD ACTIVE</b><div class="muted" id="cd"></div></div><div><b>97.5 FM</b><div class="muted">6:30–11:00 PM</div></div></div><div class="stats"><div class="stat"><strong>7,151</strong><span class="muted">Nodes</span></div><div class="stat"><strong>3</strong><span class="muted">Falcons</span></div><div class="stat"><strong>45</strong><span class="muted">Ports Used</span></div><div class="stat"><strong id="readyStat">0%</strong><span class="muted">Display Ready</span></div></div><div class="progressWrap"><div class="progressLabel"><b>Installation Progress</b><span class="badge" id="readyBadge">0% complete</span></div><div class="progressBar"><div class="progressFill" id="readyBar"></div></div></div></div>
+
+<div class="topActions">
+  <div class="quick" onclick="openTab('maintenance')"><span>🔧</span><b>Log Issue</b></div>
+  <div class="quick" onclick="openTab('expenses')"><span>💳</span><b>Add Expense</b></div>
+  <div class="quick" onclick="openTab('social')"><span>📣</span><b>Plan Post</b></div>
+  <div class="quick" onclick="openTab('nightlog')"><span>🌙</span><b>Night Log</b></div>
+</div>
+<div class="dashboardGrid">
+  <div class="dashCard"><small>Open Maintenance</small><b id="dashIssues">0</b></div>
+  <div class="dashCard"><small>Low Stock Items</small><b id="dashLow">0</b></div>
+  <div class="dashCard"><small>Show Runtime</small><b id="dashRuntime">0:00</b></div>
+  <div class="dashCard"><small>Scheduled Social</small><b id="dashSocial">0</b></div>
+  <div class="dashCard"><small>Total Expenses</small><b id="dashSpend">$0.00</b></div>
+  <div class="dashCard"><small>Nights Logged</small><b id="dashNights">0</b></div>
+</div>
+
+<div class="navScroller"><div class="tabs" style="grid-template-columns:repeat(4,1fr)"><button class="active" data-t="props">Props</button><button data-t="controllers">Controllers</button><button data-t="maintenance">Maintenance</button><button data-t="inventory">Inventory</button><button data-t="progress">Progress</button><button data-t="showplanner">Show Planner</button><button data-t="checklist">Checklist</button><button data-t="settings">Backup</button><button data-t="show">Show</button><button data-t="appsettings">Settings</button><button data-t="expenses">Expenses</button><button data-t="social">Social</button><button data-t="nightlog">Night Log</button></div></div>
+<section id="props" class="panel active"><h2>Prop Inventory</h2><div id="plist"></div></section>
+<section id="controllers" class="panel"><h2>Falcon Port Map</h2><div id="clist"></div></section>
+<section id="maintenance" class="panel"><h2>Maintenance Log</h2><div class="card"><select id="iprop"></select><input id="ititle" placeholder="Issue e.g. Pixel 187 dead"><textarea id="inotes" placeholder="Notes"></textarea><button onclick="addIssue()">Add Issue</button></div><div id="ilist"></div></section>
+<section id="inventory" class="panel"><h2>Inventory & Spare Parts</h2>
+<div class="toolbar"><button onclick="addInventoryItem()">+ Add Item</button><button onclick="showLowStock()">Show Low Stock</button><button onclick="renderInventory()">Show All</button></div>
+<div class="summaryGrid"><div class="summaryBox"><b id="invTypes">0</b><span class="mini">Item Types</span></div><div class="summaryBox"><b id="invTotal">0</b><span class="mini">Total Pieces</span></div><div class="summaryBox"><b id="invLow">0</b><span class="mini">Low Stock</span></div></div>
+<div id="inventoryList" class="inventoryGrid"></div></section>
+
+<section id="progress" class="panel"><h2>Installation Progress</h2>
+<div class="card"><div class="row"><div><div class="installPct" id="progressPct">0%</div><div class="muted">Overall readiness</div></div><div style="text-align:right"><b id="readyProps">0</b><div class="muted">props ready</div></div></div>
+<div class="progressBar" style="margin-top:12px"><div class="progressFill" id="progressBar2"></div></div>
+<div class="installSteps" id="installSteps"></div></div>
+<div class="card"><b>Readiness formula</b><div class="muted" style="margin-top:6px">Prop status contributes most of the score. Opening checklist completion adds the remaining portion, so the dashboard reflects both installation and operational readiness.</div></div>
+</section>
+<section id="showplanner" class="panel"><h2>Show Planner / Playlist</h2><div class="card"><div class="row"><div><b>Halloween 2026 Show</b><div class="muted">Build the running order, sequence progress and licensing status.</div></div><div style="text-align:right"><b id="runtime">0:00</b><div class="muted">Total runtime</div></div></div></div><div class="card"><input id="songName" placeholder="Song / segment name"><input id="songArtist" placeholder="Artist or description"><input id="songDuration" placeholder="Duration (m:ss)"><select id="songSequence"><option>Not Started</option><option>Sequencing</option><option>Testing</option><option>Ready</option></select><select id="songLicense"><option>License Pending</option><option>Permission Requested</option><option>Cleared</option><option>Not Required</option></select><button onclick="addSong()">+ Add Song / Segment</button></div><div id="songList"></div></section><section id="checklist" class="panel"><h2>Opening Checklist</h2><div id="tlist"></div></section>
+
+<section id="settings" class="panel">
+  <h2>Backup & Data Tools</h2>
+  <div class="card">
+    <b>Export / Import</b>
+    <div class="muted" style="margin:6px 0 10px">Save your Control Center data as a JSON backup file, or restore it later on this or another device.</div>
+    <div class="exportbox">
+      <button onclick="exportBackup()">Export Backup</button>
+      <button onclick="document.getElementById('importFile').click()">Import Backup</button>
+      <input id="importFile" type="file" accept=".json,application/json" style="display:none" onchange="importBackup(event)">
+    </div>
+  </div>
+  <div class="card">
+    <b>Reset</b>
+    <div class="muted" style="margin:6px 0 10px">This clears all locally saved edits, issues, inventory changes, playlist changes, and statuses on this device.</div>
+    <button class="danger" onclick="resetAll()">Reset Local Data</button>
+  </div>
+</section>
+
+
+<section id="show" class="panel">
+  <h2>Show Planner</h2>
+  <div class="card">
+    <div class="row"><div><b id="showTitleDisplay">Halloween 2026</b><div class="muted" id="showScheduleDisplay"></div></div><div style="text-align:right"><b id="showRuntime">0:00</b><div class="muted">Total runtime</div></div></div>
+  </div>
+  <div class="toolbar"><button onclick="addShowItem()">+ Add Song / Bumper</button></div>
+  <div id="showList"></div>
+</section>
+
+<section id="appsettings" class="panel">
+  <h2>Show & Business Settings</h2>
+  <div class="card">
+    <div class="settingsGrid">
+      <label>Show Name<input id="setShowName"></label>
+      <label>Season<input id="setSeason"></label>
+      <label>Opening Date<input id="setOpenDate" type="date"></label>
+      <label>Closing Date<input id="setCloseDate" type="date"></label>
+      <label>Nightly Start<input id="setStart" type="time"></label>
+      <label>Nightly End<input id="setEnd" type="time"></label>
+      <label>FM Frequency<input id="setFreq"></label>
+      <label>Brightness Limit (%)<input id="setBrightness" type="number" min="1" max="100"></label>
+      <label>Business Name<input id="setBusiness"></label>
+      <label>Owner Name<input id="setOwner"></label>
+      <label>Email<input id="setEmail" type="email"></label>
+      <label>Website<input id="setWebsite"></label>
+      <label>Facebook<input id="setFacebook"></label>
+      <label>Location<input id="setLocation"></label>
+      <label class="full">Public Notes<textarea id="setNotes"></textarea></label>
+    </div>
+    <div class="toolbar"><button onclick="saveSettings()">Save Settings</button></div>
+  </div>
+  <div class="notice">These settings are private to this Control Center file/browser. They do not automatically change the public Spectral Lights website.</div>
+</section>
+
+
+<section id="expenses" class="panel">
+  <h2>Expenses & Purchases</h2>
+  <div class="expenseGrid">
+    <div class="expenseStat"><b id="expenseTotal">$0.00</b><span class="muted">Total Spent</span></div>
+    <div class="expenseStat"><b id="expenseMonth">$0.00</b><span class="muted">This Month</span></div>
+    <div class="expenseStat"><b id="expenseCount">0</b><span class="muted">Purchases</span></div>
+    <div class="expenseStat"><b id="expenseTopCat">—</b><span class="muted">Top Category</span></div>
+  </div>
+  <div class="card">
+    <div class="editgrid">
+      <label>Date<input id="expDate" type="date"></label>
+      <label>Vendor<input id="expVendor" placeholder="e.g. Gilbert Engineering"></label>
+      <label>Category<select id="expCategory">
+        <option>Props</option><option>Pixels / Nodes</option><option>Controllers</option><option>Power / Electrical</option>
+        <option>Wire / Connectors</option><option>Tools</option><option>Website / Domain</option><option>Printing / Marketing</option>
+        <option>Music / Licensing</option><option>Repairs / Maintenance</option><option>Business Fees</option><option>Other</option>
+      </select></label>
+      <label>Amount<input id="expAmount" type="number" min="0" step="0.01" placeholder="0.00"></label>
+      <label>Payment Method<select id="expMethod"><option>Business Card</option><option>Business Checking</option><option>Personal Card</option><option>Personal Cash</option><option>Other</option></select></label>
+      <label>Receipt / Order #<input id="expReceipt" placeholder="Order or receipt reference"></label>
+      <label class="full">Notes<textarea id="expNotes" placeholder="What was purchased?"></textarea></label>
+    </div>
+    <div class="toolbar"><button onclick="addExpense()">Add Purchase</button><button onclick="exportExpensesCSV()">Export CSV</button></div>
+  </div>
+  <div class="toolbar"><button onclick="renderExpenses()">All</button><button onclick="filterExpenses('Props')">Props</button><button onclick="filterExpenses('Music / Licensing')">Licensing</button><button onclick="filterExpenses('Business Fees')">Business Fees</button></div>
+  <div id="expenseList"></div>
+</section>
+
+
+<section id="social" class="panel">
+  <h2>Social Planner</h2>
+  <div class="socialGrid">
+    <div class="socialStat"><b id="socialDrafts">0</b><span class="muted">Drafts</span></div>
+    <div class="socialStat"><b id="socialScheduled">0</b><span class="muted">Scheduled</span></div>
+    <div class="socialStat"><b id="socialPublished">0</b><span class="muted">Published</span></div>
+    <div class="socialStat"><b id="socialUpcoming">0</b><span class="muted">Next 7 Days</span></div>
+  </div>
+
+  <div class="card">
+    <div class="editgrid">
+      <label>Platform<select id="socPlatform"><option>Facebook Feed</option><option>Facebook Story</option><option>Instagram</option><option>Website Update</option></select></label>
+      <label>Status<select id="socStatus"><option>Draft</option><option>Scheduled</option><option>Published</option></select></label>
+      <label>Date<input id="socDate" type="date"></label>
+      <label>Time<input id="socTime" type="time"></label>
+      <label class="full">Title / Idea<input id="socTitle" placeholder="Behind the Scenes: Pixel Pile"></label>
+      <label class="full">Caption<textarea id="socCaption" placeholder="Post caption..."></textarea></label>
+      <label>Asset / Image<input id="socAsset" placeholder="IMG_4761.jpeg or graphic name"></label>
+      <label>Link<input id="socLink" placeholder="spectrallights.com"></label>
+    </div>
+    <div class="toolbar"><button onclick="addSocial()">Add Post</button><button onclick="exportSocialCSV()">Export CSV</button></div>
+  </div>
+
+  <div class="card">
+    <b>Upcoming Calendar</b>
+    <div id="socialCalendar" class="calendarStrip" style="margin-top:10px"></div>
+  </div>
+
+  <div class="toolbar"><button onclick="renderSocial()">All</button><button onclick="renderSocial('Draft')">Drafts</button><button onclick="renderSocial('Scheduled')">Scheduled</button><button onclick="renderSocial('Published')">Published</button></div>
+  <div id="socialList"></div>
+</section>
+
+<section id="nightlog" class="panel"><h2>Show Night Log</h2>
+<div class="nightStats"><div class="nightStat"><b id="nlNights">0</b><span class="muted">Nights Logged</span></div><div class="nightStat"><b id="nlCars">0</b><span class="muted">Estimated Cars</span></div><div class="nightStat"><b id="nlAvg">0</b><span class="muted">Avg Cars/Night</span></div><div class="nightStat"><b id="nlUptime">100%</b><span class="muted">Avg Uptime</span></div></div>
+<div class="card"><div class="editgrid">
+<label>Date<input id="nlDate" type="date"></label><label>Estimated Cars<input id="nlCarInput" type="number" min="0" value="0"></label>
+<label>Show Start<input id="nlStart" type="time" value="18:30"></label><label>Show End<input id="nlEnd" type="time" value="23:00"></label>
+<label>Weather<select id="nlWeather"><option>Clear</option><option>Cloudy</option><option>Light Rain</option><option>Rain</option><option>Windy</option><option>Cold</option><option>Other</option></select></label>
+<label>Uptime %<input id="nlUpInput" type="number" min="0" max="100" value="100"></label>
+<label class="full">Technical Issues<textarea id="nlIssues" placeholder="Controller, pixel, audio, FM, traffic issues..."></textarea></label>
+<label class="full">Notes<textarea id="nlNotes" placeholder="Crowd response, busiest time, things to change tomorrow..."></textarea></label>
+</div><div class="toolbar"><button onclick="addNight()">Save Night</button><button onclick="exportNights()">Export CSV</button></div></div>
+<div id="nightList"></div></section>
+</main><script>
+const P=[["Bat #1",50,"WS2811"],["Bat #2",50,"WS2811"],["Bat #3",50,"WS2811"],["Bat #4",50,"WS2811"],["Mega Skull",250,"WS2811"],["Shape Shifter",1113,"Magicolor Pro"],["Spooky Tree C",394,"Magicolor Pro"],["Tomb Warp",183,"WS2811"],["Tombstone Skull & Matrix",369,"WS2811"],["Tombwarp w/ Skull",262,"WS2811"],["Triune Tomb",730,"WS2811"],["Singing Bride of Franken",425,"Magicolor Pro"],["Insane Arch #1",715,"WS2811"],["Insane Arch #2",715,"WS2811"],["Insane Arch #3",715,"WS2811"],["Vertical #1",72,"WS2811"],["Vertical #2",72,"WS2811"],["Vertical #3",72,"WS2811"],["Vertical #4",72,"WS2811"],["Horizontal #1",20,"WS2811"],["Horizontal #2",20,"WS2811"],["Horizontal #3",30,"WS2811"],["Eave #1",29,"WS2811"],["Eave #2",29,"WS2811"],["Tune-To Matrix",264,"WS2811"],["400 Matrix",400,"WS2811"]];
+const C=[["F16V5 #1 — Arches / Features",["Arch1 A 179","Arch1 B 179","Arch1 C 179","Arch1 D 178","Arch2 A 179","Arch2 B 179","Arch2 C 179","Arch2 D 178","Arch3 A 179","Arch3 B 179","Arch3 C 179","Arch3 D 178","Mega Skull A 125","Mega Skull B 125","Bat #1 50","SPARE"]],["F16V5 #2 — Graveyard / Characters",["Shape A 371","Shape B 371","Shape C 371","Bride 425","Spooky Tree 394","Triune A 183","Triune B 183","Triune C 182","Triune D 182","Tomb Skull A 185","Tomb Skull B 184","Tombwarp Skull A 131","Tombwarp Skull B 131","Tomb Warp 183","Bat #2 50","SPARE"]],["F16V4 — House / Matrices",["Matrix A 200","Matrix B 200","Tune-To A 132","Tune-To B 132","Vertical #1 72","Vertical #2 72","Vertical #3 72","Vertical #4 72","Horizontal #1 20","Horizontal #2 20","Horizontal #3 30","Eave #1 29","Eave #2 29","Bat #3 50","Bat #4 50","SPARE"]]];
+let S=JSON.parse(localStorage.getItem("spectralCC")||'{"ps":{},"issues":[],"tasks":{},"inventory":[{"name":"12V WS2811 pixels","qty":500,"min":200,"unit":"nodes"},{"name":"Magicolor Pro nodes","qty":200,"min":100,"unit":"nodes"},{"name":"3-pin pigtails","qty":30,"min":10,"unit":"pcs"},{"name":"Pixel extension cables","qty":20,"min":8,"unit":"pcs"},{"name":"5A blade fuses","qty":25,"min":10,"unit":"pcs"},{"name":"12V power supplies","qty":3,"min":1,"unit":"pcs"},{"name":"Waterproof connectors","qty":24,"min":10,"unit":"pcs"},{"name":"Spare Falcon output fuses","qty":15,"min":8,"unit":"pcs"}]}');function save(){localStorage.setItem("spectralCC",JSON.stringify(S));setTimeout(updateProgress,0)}
+function props(){plist.innerHTML='<div class="toolbar"><button onclick="addProp()">+ Add Prop</button></div>'+P.map((p,i)=>`<div class="card"><div class="row"><div><b>${p[0]}</b><div class="muted">${p[1]} nodes • <span class="${p[2][0]=='M'?'purple':'green'}">${p[2]}</span></div></div><select onchange="S.ps[${i}]=this.value;save()">${["Not Started","Built","Installed","Tested","Ready"].map(x=>`<option ${S.ps[i]==x?'selected':''}>${x}</option>`).join("")}</select></div><div class="toolbar"><button class="smallbtn" onclick="editProp(${i})">Edit</button><button class="smallbtn danger" onclick="deleteProp(${i})">Delete</button></div></div>`).join("")}
+function ctrls(){clist.innerHTML=C.map((c,ci)=>`<div class="card"><div class="row"><b>${c[0]}</b><button class="smallbtn" onclick="renameController(${ci})">Rename</button></div><div class="ports">${c[1].map((x,i)=>`<div class="port ${x=="SPARE"?"spare":""}" onclick="editPort(${ci},${i})"><b>P${i+1}</b> • ${x}<div class="mini">Tap to edit</div></div>`).join("")}</div></div>`).join("")}
+iprop.innerHTML=P.map(p=>`<option>${p[0]}</option>`).join("");function addIssue(){if(!ititle.value)return;S.issues.unshift({p:iprop.value,t:ititle.value,n:inotes.value,d:false});ititle.value=inotes.value="";save();issues()}
+function issues(){ilist.innerHTML=S.issues.map((x,i)=>`<div class="card"><div class="row"><div><b>${x.t}</b><div class="muted">${x.p}</div></div><button onclick="S.issues[${i}].d=!S.issues[${i}].d;save();issues()">${x.d?"Reopen":"Fixed"}</button></div><div class="muted">${x.n}</div></div>`).join("")||'<div class="muted">No issues logged.</div>'}
+const T=["Finish prop builds","Mount house lines/eaves","Place yard props","Install all 3 Falcons","Configure xLights outputs","20% full-white port test","Test 97.5 FM transmitter","Verify Tune-To Matrix","Run full show test","Opening-night inspection"];function tasks(){tlist.innerHTML=T.map((t,i)=>`<label class="card row"><span>${t}</span><input type="checkbox" style="width:24px" ${S.tasks[i]?'checked':''} onchange="S.tasks[${i}]=this.checked;save()"></label>`).join("")}
+
+function ensurePlaylist(){if(!S.playlist)S.playlist=[
+{name:"Opening Announcement",artist:"Spectral Lights",dur:"0:25",seq:"Not Started",lic:"Not Required"},
+{name:"When the Lights Come On",artist:"Asking Alexandria",dur:"3:23",seq:"Not Started",lic:"License Pending"},
+{name:"Monster Mash",artist:"Only the Young",dur:"3:00",seq:"Not Started",lic:"License Pending"},
+{name:"One Way or Another",artist:"Bette Midler / Hocus Pocus 2",dur:"3:33",seq:"Not Started",lic:"License Pending"},
+{name:"Halloween Bumper",artist:"Spectral Lights",dur:"0:15",seq:"Not Started",lic:"Not Required"},
+{name:"Ghostbusters",artist:"Ray Parker Jr.",dur:"4:05",seq:"Not Started",lic:"License Pending"},
+{name:"My Songs Know What You Did in the Dark (Light Em Up)",artist:"Fall Out Boy",dur:"3:07",seq:"Not Started",lic:"License Pending"},
+{name:"Thriller",artist:"Michael Jackson",dur:"5:57",seq:"Not Started",lic:"Permission Requested"},
+{name:"Closing Announcement",artist:"Spectral Lights",dur:"0:20",seq:"Not Started",lic:"Not Required"}
+];save()}
+function secs(d){let a=(d||"0:00").split(":").map(Number);return (a.length==2?a[0]*60+a[1]:0)}
+function fmt(n){return Math.floor(n/60)+":"+String(n%60).padStart(2,"0")}
+function renderPlaylist(){ensurePlaylist();let total=S.playlist.reduce((a,x)=>a+secs(x.dur),0);runtime.textContent=fmt(total);songList.innerHTML=S.playlist.map((x,i)=>`<div class="card"><div class="row"><div><b>${i+1}. ${x.name}</b><div class="muted">${x.artist} • ${x.dur}</div></div><div><span class="badge">${x.seq}</span> <span class="badge">${x.lic}</span></div></div><div class="toolbar"><button onclick="moveSong(${i},-1)">↑ Up</button><button onclick="moveSong(${i},1)">↓ Down</button><button onclick="editSong(${i})">Edit</button><button onclick="deleteSong(${i})">Delete</button></div></div>`).join("")}
+function addSong(){if(!songName.value.trim())return;S.playlist.push({name:songName.value,artist:songArtist.value,dur:songDuration.value||"0:00",seq:songSequence.value,lic:songLicense.value});songName.value=songArtist.value=songDuration.value="";save();renderPlaylist()}
+function moveSong(i,d){let j=i+d;if(j<0||j>=S.playlist.length)return;[S.playlist[i],S.playlist[j]]=[S.playlist[j],S.playlist[i]];save();renderPlaylist()}
+function editSong(i){let x=S.playlist[i],n=prompt("Song / segment",x.name);if(n===null)return;let a=prompt("Artist / description",x.artist);if(a===null)return;let d=prompt("Duration m:ss",x.dur);if(d===null)return;let q=prompt("Sequence status: Not Started, Sequencing, Testing, Ready",x.seq);if(q===null)return;let l=prompt("Licensing: License Pending, Permission Requested, Cleared, Not Required",x.lic);if(l===null)return;S.playlist[i]={name:n,artist:a,dur:d,seq:q,lic:l};save();renderPlaylist()}
+function deleteSong(i){if(confirm("Remove this song/segment?")){S.playlist.splice(i,1);save();renderPlaylist()}}
+function ensureInventory(){if(!S.inventory)S.inventory=[]}
+function renderInventory(filterLow=false){
+  ensureInventory();
+  let items=S.inventory.map((x,i)=>({...x,i})); if(filterLow)items=items.filter(x=>Number(x.qty)<=Number(x.min));
+  inventoryList.innerHTML=items.map(x=>`<div class="invCard"><div class="invTop"><div><b>${x.name}</b><div class="mini">Minimum: ${x.min} ${x.unit||"pcs"}</div></div><div class="qty ${Number(x.qty)<=Number(x.min)?"low":"ok"}">${x.qty}</div></div><div class="toolbar"><button onclick="changeQty(${x.i},-1)">−1</button><button onclick="changeQty(${x.i},1)">+1</button><button onclick="editInventory(${x.i})">Edit</button></div></div>`).join("")||'<div class="muted">No inventory items.</div>';
+  invTypes.textContent=S.inventory.length;
+  invTotal.textContent=S.inventory.reduce((a,b)=>a+(Number(b.qty)||0),0);
+  invLow.textContent=S.inventory.filter(x=>Number(x.qty)<=Number(x.min)).length;
+}
+function changeQty(i,d){S.inventory[i].qty=Math.max(0,(Number(S.inventory[i].qty)||0)+d);save();renderInventory();updateProgress()}
+function addInventoryItem(){let name=prompt("Item name");if(!name)return;let qty=Number(prompt("Current quantity","0")||0);let min=Number(prompt("Low-stock minimum","0")||0);let unit=prompt("Unit (pcs, nodes, ft, etc.)","pcs")||"pcs";S.inventory.push({name,qty,min,unit});save();renderInventory()}
+function editInventory(i){let x=S.inventory[i];let name=prompt("Item name",x.name);if(name===null)return;let qty=Number(prompt("Current quantity",x.qty));let min=Number(prompt("Low-stock minimum",x.min));let unit=prompt("Unit",x.unit||"pcs")||"pcs";S.inventory[i]={name,qty,min,unit};save();renderInventory()}
+function showLowStock(){renderInventory(true)}
+function updateProgress(){
+  const weights={"Not Started":0,"Built":.25,"Installed":.55,"Tested":.8,"Ready":1};
+  let propScore=0,ready=0;
+  P.forEach((p,i)=>{let s=S.ps[i]||"Not Started";propScore+=weights[s]||0;if(s==="Ready")ready++});
+  propScore = P.length ? propScore/P.length : 0;
+  let taskDone=0;T.forEach((t,i)=>{if(S.tasks[i])taskDone++});
+  let taskScore=T.length?taskDone/T.length:0;
+  let pct=Math.round((propScore*.8+taskScore*.2)*100);
+  readyStat.textContent=pct+"%";readyBadge.textContent=pct+"% complete";readyBar.style.width=pct+"%";
+  progressPct.textContent=pct+"%";progressBar2.style.width=pct+"%";readyProps.textContent=ready+" / "+P.length;
+  installSteps.innerHTML=[
+    ["Props built/installed/tested",Math.round(propScore*100)+"%"],
+    ["Opening checklist",Math.round(taskScore*100)+"%"],
+    ["Maintenance issues open",S.issues.filter(x=>!x.d).length],
+    ["Low-stock items",(S.inventory||[]).filter(x=>Number(x.qty)<=Number(x.min)).length]
+  ].map(x=>`<div class="installStep"><span>${x[0]}</span><b>${x[1]}</b></div>`).join("");
+}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tabs button,.panel").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById(b.dataset.t).classList.add("active")});let days=Math.max(0,Math.ceil((new Date("2026-09-25T18:30")-new Date())/864e5));cd.textContent=days+" days until The Haunting Begins";props();ctrls();issues();tasks();renderInventory();renderPlaylist();updateProgress();
+
+function exportBackup(){
+  const data = {
+    exportedAt: new Date().toISOString(),
+    version: "v4",
+    state: S,
+    props: P,
+    controllers: C
+  };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "spectral-lights-control-center-backup.json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function importBackup(e){
+  const f=e.target.files?.[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{
+    const data=JSON.parse(r.result);
+    if(data.state) S=data.state; else S=data;
+    save();
+    alert("Backup imported. Reloading.");
+    location.reload();
+  }catch(err){alert("Could not import this backup file.");}};
+  r.readAsText(f);
+}
+function resetAll(){
+  if(!confirm("Reset all saved Spectral Lights Control Center data on this device?"))return;
+  localStorage.removeItem("spectralCC");
+  location.reload();
+}
+function editProp(i){
+  const p=P[i];
+  const name=prompt("Prop name",p[0]); if(name===null)return;
+  const nodes=Number(prompt("Node count",p[1])); if(!Number.isFinite(nodes))return;
+  const type=prompt("Pixel type",p[2]); if(type===null)return;
+  p[0]=name;p[1]=nodes;p[2]=type;
+  save();props();iprop.innerHTML=P.map(x=>`<option>${x[0]}</option>`).join("");
+}
+function addProp(){
+  const name=prompt("New prop name"); if(!name)return;
+  const nodes=Number(prompt("Node count","0")||0);
+  const type=prompt("Pixel type","WS2811")||"WS2811";
+  P.push([name,nodes,type]); save(); props(); updateProgress();
+}
+function deleteProp(i){
+  if(!confirm("Delete "+P[i][0]+"?"))return;
+  P.splice(i,1); save(); props(); updateProgress();
+}
+function editPort(ci,pi){
+  const cur=C[ci][1][pi];
+  const v=prompt("Controller "+(ci+1)+" Port "+(pi+1),cur);
+  if(v===null)return;
+  C[ci][1][pi]=v.trim()||"SPARE"; save(); ctrls();
+}
+function renameController(ci){
+  const v=prompt("Controller name",C[ci][0]); if(v===null)return;
+  C[ci][0]=v; save(); ctrls();
+}
+
+const DEFAULT_SETTINGS={
+  showName:"Spectral Lights",
+  season:"Halloween 2026",
+  openDate:"2026-09-25",
+  closeDate:"2026-11-01",
+  start:"18:30",
+  end:"23:00",
+  freq:"97.5 FM",
+  brightness:20,
+  business:"Spectral Lights LLC",
+  owner:"Thomas Franklin",
+  email:"support@spectral-lights.com",
+  website:"spectrallights.com",
+  facebook:"facebook.com/SpectralLightsGA",
+  location:"Statham, Georgia",
+  notes:"Exact driving directions will be posted closer to opening night."
+};
+const DEFAULT_SHOW=[
+  {title:"Opening Announcement",artist:"Spectral Lights",duration:25,status:"Planned",license:"N/A"},
+  {title:"When the Lights Come On",artist:"Asking Alexandria",duration:220,status:"Sequence Purchased",license:"Pending"},
+  {title:"Monster Mash",artist:"Only The Young",duration:190,status:"Sequence Purchased",license:"Pending"},
+  {title:"One Way or Another",artist:"Bette Midler",duration:170,status:"Sequence Purchased",license:"Pending"},
+  {title:"Ghostbusters",artist:"Ray Parker Jr.",duration:245,status:"Sequence Purchased",license:"Pending"},
+  {title:"My Songs Know What You Did in the Dark",artist:"Fall Out Boy",duration:188,status:"Sequence Purchased",license:"Pending"},
+  {title:"Thriller",artist:"Michael Jackson",duration:358,status:"Planned",license:"Pending"},
+  {title:"Closing Announcement",artist:"Spectral Lights",duration:20,status:"Planned",license:"N/A"}
+];
+function ensureV5(){
+  if(!S.settings)S.settings={...DEFAULT_SETTINGS};
+  else S.settings={...DEFAULT_SETTINGS,...S.settings};
+  if(!S.showItems)S.showItems=DEFAULT_SHOW.map(x=>({...x}));
+}
+function fmtTime(sec){sec=Number(sec)||0;let m=Math.floor(sec/60),s=sec%60;return m+":"+String(s).padStart(2,"0")}
+function renderShow(){
+  ensureV5();
+  const total=S.showItems.reduce((a,b)=>a+(Number(b.duration)||0),0);
+  showRuntime.textContent=fmtTime(total);
+  showTitleDisplay.textContent=S.settings.season;
+  showScheduleDisplay.textContent=`${S.settings.openDate} to ${S.settings.closeDate} • ${S.settings.start}–${S.settings.end} • ${S.settings.freq}`;
+  showList.innerHTML=S.showItems.map((x,i)=>`<div class="songCard"><div class="row"><div><b>${i+1}. ${x.title}</b><div class="muted">${x.artist}</div></div><div><b>${fmtTime(x.duration)}</b></div></div>
+  <div class="songMeta">
+    <select onchange="S.showItems[${i}].status=this.value;save();renderShow()">${["Planned","Sequence Purchased","Sequencing","Testing","Ready"].map(v=>`<option ${x.status===v?"selected":""}>${v}</option>`).join("")}</select>
+    <select onchange="S.showItems[${i}].license=this.value;save();renderShow()">${["N/A","Pending","ASCAP","BMI","ASCAP + BMI","Cleared"].map(v=>`<option ${x.license===v?"selected":""}>${v}</option>`).join("")}</select>
+    <input type="number" min="0" value="${x.duration}" onchange="S.showItems[${i}].duration=Number(this.value);save();renderShow()" title="Duration in seconds">
+  </div>
+  <div class="toolbar"><button class="smallbtn" onclick="moveShow(${i},-1)">↑ Move Up</button><button class="smallbtn" onclick="moveShow(${i},1)">↓ Move Down</button><button class="smallbtn" onclick="editShow(${i})">Edit</button><button class="smallbtn danger" onclick="deleteShow(${i})">Delete</button></div></div>`).join("");
+}
+function addShowItem(){
+  let title=prompt("Song / bumper title"); if(!title)return;
+  let artist=prompt("Artist / source","Spectral Lights")||"";
+  let duration=Number(prompt("Duration in seconds","180")||0);
+  S.showItems.push({title,artist,duration,status:"Planned",license:"Pending"});save();renderShow();
+}
+function editShow(i){
+  let x=S.showItems[i];
+  let title=prompt("Title",x.title); if(title===null)return;
+  let artist=prompt("Artist",x.artist); if(artist===null)return;
+  let duration=Number(prompt("Duration in seconds",x.duration));
+  x.title=title;x.artist=artist;x.duration=Number.isFinite(duration)?duration:x.duration;save();renderShow();
+}
+function deleteShow(i){if(!confirm("Delete "+S.showItems[i].title+"?"))return;S.showItems.splice(i,1);save();renderShow()}
+function moveShow(i,d){let j=i+d;if(j<0||j>=S.showItems.length)return;[S.showItems[i],S.showItems[j]]=[S.showItems[j],S.showItems[i]];save();renderShow()}
+function loadSettingsForm(){
+  ensureV5(); const x=S.settings;
+  setShowName.value=x.showName;setSeason.value=x.season;setOpenDate.value=x.openDate;setCloseDate.value=x.closeDate;setStart.value=x.start;setEnd.value=x.end;setFreq.value=x.freq;setBrightness.value=x.brightness;setBusiness.value=x.business;setOwner.value=x.owner;setEmail.value=x.email;setWebsite.value=x.website;setFacebook.value=x.facebook;setLocation.value=x.location;setNotes.value=x.notes;
+}
+function saveSettings(){
+  S.settings={showName:setShowName.value,season:setSeason.value,openDate:setOpenDate.value,closeDate:setCloseDate.value,start:setStart.value,end:setEnd.value,freq:setFreq.value,brightness:Number(setBrightness.value)||20,business:setBusiness.value,owner:setOwner.value,email:setEmail.value,website:setWebsite.value,facebook:setFacebook.value,location:setLocation.value,notes:setNotes.value};
+  save(); applySettings(); renderShow(); alert("Settings saved.");
+}
+function applySettings(){
+  ensureV5();
+  const x=S.settings;
+  const heroFreq=[...document.querySelectorAll(".hero b")].find(el=>el.textContent.includes("FM"));
+  if(heroFreq)heroFreq.textContent=x.freq;
+  const heroMuted=[...document.querySelectorAll(".hero .muted")];
+  if(heroMuted.length>1) heroMuted[1].textContent=`${x.start}–${x.end}`;
+  const target=new Date(x.openDate+"T"+x.start);
+  const days=Math.max(0,Math.ceil((target-new Date())/864e5));
+  if(window.cd)cd.textContent=days+" days until "+x.season;
+}
+ensureV5();loadSettingsForm();applySettings();renderShow();
+
+function ensureExpenses(){
+  if(!S.expenses)S.expenses=[];
+}
+function money(v){return "$"+(Number(v)||0).toFixed(2)}
+function addExpense(){
+  ensureExpenses();
+  const amount=Number(expAmount.value);
+  if(!expVendor.value.trim()){alert("Enter a vendor.");return}
+  if(!Number.isFinite(amount)||amount<0){alert("Enter a valid amount.");return}
+  S.expenses.unshift({
+    date:expDate.value||new Date().toISOString().slice(0,10),
+    vendor:expVendor.value.trim(),
+    category:expCategory.value,
+    amount,
+    method:expMethod.value,
+    receipt:expReceipt.value.trim(),
+    notes:expNotes.value.trim()
+  });
+  expVendor.value="";expAmount.value="";expReceipt.value="";expNotes.value="";
+  save();renderExpenses();
+}
+function deleteExpense(i){
+  if(!confirm("Delete this purchase?"))return;
+  S.expenses.splice(i,1);save();renderExpenses();
+}
+function editExpense(i){
+  const x=S.expenses[i];
+  const vendor=prompt("Vendor",x.vendor); if(vendor===null)return;
+  const amount=Number(prompt("Amount",x.amount)); if(!Number.isFinite(amount))return;
+  const receipt=prompt("Receipt / Order #",x.receipt||""); if(receipt===null)return;
+  const notes=prompt("Notes",x.notes||""); if(notes===null)return;
+  x.vendor=vendor;x.amount=amount;x.receipt=receipt;x.notes=notes;save();renderExpenses();
+}
+function renderExpenses(filter=null){
+  ensureExpenses();
+  let rows=S.expenses.map((x,i)=>({...x,i}));
+  if(filter)rows=rows.filter(x=>x.category===filter);
+  expenseList.innerHTML=rows.map(x=>`<div class="expenseRow"><div class="row"><div><b>${x.vendor}</b><div class="muted">${x.date} • <span class="cat">${x.category}</span></div></div><div class="money">${money(x.amount)}</div></div>
+    <div class="expenseMeta"><div><span class="muted">Paid with</span><br>${x.method}</div><div><span class="muted">Receipt</span><br>${x.receipt||"—"}</div><div style="grid-column:span 2"><span class="muted">Notes</span><br>${x.notes||"—"}</div></div>
+    <div class="toolbar"><button class="smallbtn" onclick="editExpense(${x.i})">Edit</button><button class="smallbtn danger" onclick="deleteExpense(${x.i})">Delete</button></div></div>`).join("")||'<div class="muted">No purchases recorded.</div>';
+  const total=S.expenses.reduce((a,b)=>a+(Number(b.amount)||0),0);
+  const ym=new Date().toISOString().slice(0,7);
+  const month=S.expenses.filter(x=>(x.date||"").startsWith(ym)).reduce((a,b)=>a+(Number(b.amount)||0),0);
+  const cats={};S.expenses.forEach(x=>cats[x.category]=(cats[x.category]||0)+(Number(x.amount)||0));
+  const top=Object.entries(cats).sort((a,b)=>b[1]-a[1])[0]?.[0]||"—";
+  expenseTotal.textContent=money(total);expenseMonth.textContent=money(month);expenseCount.textContent=S.expenses.length;expenseTopCat.textContent=top;
+}
+function filterExpenses(cat){renderExpenses(cat)}
+function exportExpensesCSV(){
+  ensureExpenses();
+  const esc=v=>'"'+String(v??"").replaceAll('"','""')+'"';
+  const rows=[["Date","Vendor","Category","Amount","Payment Method","Receipt","Notes"],...S.expenses.map(x=>[x.date,x.vendor,x.category,x.amount,x.method,x.receipt,x.notes])];
+  const csv=rows.map(r=>r.map(esc).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="spectral-lights-expenses.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+ensureExpenses();
+if(window.expDate)expDate.value=new Date().toISOString().slice(0,10);
+renderExpenses();
+
+function ensureSocial(){
+  if(!S.social)S.social=[
+    {platform:"Facebook Feed",status:"Published",date:"2026-08-25",time:"18:30",title:"Behind the Scenes: Pixel Pile",caption:"Behind the Scenes at Spectral Lights!",asset:"IMG_4761.jpeg",link:"spectrallights.com"},
+    {platform:"Facebook Story",status:"Published",date:"2026-08-25",time:"18:35",title:"Behind the Scenes Story",caption:"A little peek behind the scenes… The Haunting Begins Sept. 25",asset:"IMG_4761.jpeg",link:""},
+    {platform:"Facebook Story",status:"Draft",date:"2026-08-26",time:"19:00",title:"Thriller vs Ghostbusters Poll",caption:"Which Halloween classic HAS to be in a light show?",asset:"",link:""}
+  ];
+}
+function addSocial(){
+  ensureSocial();
+  if(!socTitle.value.trim()){alert("Enter a title or idea.");return}
+  S.social.unshift({
+    platform:socPlatform.value,status:socStatus.value,date:socDate.value||new Date().toISOString().slice(0,10),time:socTime.value||"19:00",
+    title:socTitle.value.trim(),caption:socCaption.value.trim(),asset:socAsset.value.trim(),link:socLink.value.trim()
+  });
+  socTitle.value=socCaption.value=socAsset.value="";save();renderSocial();
+}
+function editSocial(i){
+  const x=S.social[i];
+  let title=prompt("Title / idea",x.title); if(title===null)return;
+  let caption=prompt("Caption",x.caption||""); if(caption===null)return;
+  let asset=prompt("Asset / image",x.asset||""); if(asset===null)return;
+  x.title=title;x.caption=caption;x.asset=asset;save();renderSocial();
+}
+function deleteSocial(i){if(!confirm("Delete this social post?"))return;S.social.splice(i,1);save();renderSocial()}
+function setSocialStatus(i,v){S.social[i].status=v;save();renderSocial()}
+function renderSocial(filter=null){
+  ensureSocial();
+  let rows=S.social.map((x,i)=>({...x,i})); if(filter)rows=rows.filter(x=>x.status===filter);
+  rows.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  socialList.innerHTML=rows.map(x=>`<div class="postCard"><div class="row"><div><b>${x.title}</b><div class="muted"><span class="platform">${x.platform}</span> • ${x.date} ${x.time}</div></div><div class="status${x.status}">${x.status}</div></div>
+    <div class="postCaption">${x.caption||"No caption yet."}</div>
+    <div class="postMeta"><div><span class="muted">Asset</span><br>${x.asset||"—"}</div><div><span class="muted">Link</span><br>${x.link||"—"}</div><div><span class="muted">Status</span><br><select onchange="setSocialStatus(${x.i},this.value)">${["Draft","Scheduled","Published"].map(v=>`<option ${x.status===v?"selected":""}>${v}</option>`).join("")}</select></div></div>
+    <div class="toolbar"><button class="smallbtn" onclick="editSocial(${x.i})">Edit</button><button class="smallbtn danger" onclick="deleteSocial(${x.i})">Delete</button></div></div>`).join("")||'<div class="muted">No social posts.</div>';
+  socialDrafts.textContent=S.social.filter(x=>x.status==="Draft").length;
+  socialScheduled.textContent=S.social.filter(x=>x.status==="Scheduled").length;
+  socialPublished.textContent=S.social.filter(x=>x.status==="Published").length;
+  const now=new Date(), in7=new Date(now.getTime()+7*864e5);
+  socialUpcoming.textContent=S.social.filter(x=>{let d=new Date(x.date+"T"+(x.time||"00:00"));return d>=now&&d<=in7&&x.status!=="Published"}).length;
+  const upcoming=S.social.filter(x=>x.status!=="Published").sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,7);
+  socialCalendar.innerHTML=upcoming.map(x=>`<div class="dayChip"><b>${x.date.slice(5)}</b><span class="mini">${x.time}</span><div class="mini" style="margin-top:5px">${x.title}</div></div>`).join("")||'<div class="muted">No upcoming posts.</div>';
+}
+function exportSocialCSV(){
+  ensureSocial(); const esc=v=>'"'+String(v??"").replaceAll('"','""')+'"';
+  const rows=[["Platform","Status","Date","Time","Title","Caption","Asset","Link"],...S.social.map(x=>[x.platform,x.status,x.date,x.time,x.title,x.caption,x.asset,x.link])];
+  const csv=rows.map(r=>r.map(esc).join(",")).join("\n");
+  const blob=new Blob([csv],{type:"text/csv"});const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="spectral-lights-social-plan.csv";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+ensureSocial();
+if(window.socDate)socDate.value=new Date().toISOString().slice(0,10);
+if(window.socTime)socTime.value="19:00";
+renderSocial();
+
+function ensureNights(){if(!S.nights)S.nights=[]}
+function addNight(){ensureNights();let cars=Number(nlCarInput.value)||0,up=Math.max(0,Math.min(100,Number(nlUpInput.value)||0));S.nights.unshift({date:nlDate.value||new Date().toISOString().slice(0,10),cars,start:nlStart.value,end:nlEnd.value,weather:nlWeather.value,uptime:up,issues:nlIssues.value.trim(),notes:nlNotes.value.trim()});nlCarInput.value=0;nlUpInput.value=100;nlIssues.value="";nlNotes.value="";save();renderNights()}
+function deleteNight(i){if(!confirm("Delete this show-night log?"))return;S.nights.splice(i,1);save();renderNights()}
+function editNight(i){let x=S.nights[i];let cars=Number(prompt("Estimated cars",x.cars));if(!Number.isFinite(cars))return;let up=Number(prompt("Uptime %",x.uptime));if(!Number.isFinite(up))return;let issues=prompt("Technical issues",x.issues||"");if(issues===null)return;let notes=prompt("Notes",x.notes||"");if(notes===null)return;x.cars=cars;x.uptime=Math.max(0,Math.min(100,up));x.issues=issues;x.notes=notes;save();renderNights()}
+function renderNights(){ensureNights();nightList.innerHTML=S.nights.map((x,i)=>`<div class="nightCard"><div class="row"><div><b>${x.date}</b><div class="muted">${x.start}–${x.end} • ${x.weather}</div></div><div style="text-align:right"><b>${x.cars} cars</b><div class="${x.uptime>=95?"good":"warn"}">${x.uptime}% uptime</div></div></div>${x.issues?`<div class="postCaption"><b>Issues:</b> ${x.issues}</div>`:""}${x.notes?`<div class="postCaption"><b>Notes:</b> ${x.notes}</div>`:""}<div class="toolbar"><button class="smallbtn" onclick="editNight(${i})">Edit</button><button class="smallbtn danger" onclick="deleteNight(${i})">Delete</button></div></div>`).join("")||'<div class="muted">No show nights logged yet.</div>';let n=S.nights.length,c=S.nights.reduce((a,b)=>a+(Number(b.cars)||0),0),u=n?S.nights.reduce((a,b)=>a+(Number(b.uptime)||0),0)/n:100;nlNights.textContent=n;nlCars.textContent=c;nlAvg.textContent=n?Math.round(c/n):0;nlUptime.textContent=Math.round(u)+"%"}
+function exportNights(){ensureNights();const esc=v=>'"'+String(v??"").replaceAll('"','""')+'"';const rows=[["Date","Cars","Start","End","Weather","Uptime","Issues","Notes"],...S.nights.map(x=>[x.date,x.cars,x.start,x.end,x.weather,x.uptime,x.issues,x.notes])];let csv=rows.map(r=>r.map(esc).join(",")).join("\n"),blob=new Blob([csv],{type:"text/csv"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="spectral-lights-show-night-log.csv";document.body.appendChild(a);a.click();a.remove()}
+ensureNights();if(window.nlDate)nlDate.value=new Date().toISOString().slice(0,10);renderNights();
+
+function toastMsg(msg="Saved"){
+  const t=document.getElementById("toast"); if(!t)return;
+  t.textContent=msg;t.classList.add("show");clearTimeout(window.__toastTimer);
+  window.__toastTimer=setTimeout(()=>t.classList.remove("show"),1400);
+}
+function openTab(id){
+  document.querySelectorAll(".tabs button,.panel").forEach(x=>x.classList.remove("active"));
+  const btn=[...document.querySelectorAll(".tabs button")].find(b=>b.dataset.t===id);
+  const panel=document.getElementById(id);
+  if(btn)btn.classList.add("active"); if(panel)panel.classList.add("active");
+  if(btn)btn.scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"});
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function quickAdd(){
+  const active=document.querySelector(".panel.active")?.id;
+  if(active==="maintenance")addIssue();
+  else if(active==="inventory")addInventoryItem();
+  else if(active==="expenses")document.getElementById("expVendor")?.focus();
+  else if(active==="social")document.getElementById("socTitle")?.focus();
+  else if(active==="nightlog")document.getElementById("nlCarInput")?.focus();
+  else if(active==="show")addShowItem();
+  else openTab("maintenance");
+}
+function dashboardRefresh(){
+  try{
+    if(window.S){
+      dashIssues.textContent=(S.issues||[]).filter(x=>!x.d).length;
+      dashLow.textContent=(S.inventory||[]).filter(x=>Number(x.qty)<=Number(x.min)).length;
+      const rt=(S.showItems||[]).reduce((a,b)=>a+(Number(b.duration)||0),0);
+      dashRuntime.textContent=typeof fmtTime==="function"?fmtTime(rt):rt+"s";
+      dashSocial.textContent=(S.social||[]).filter(x=>x.status==="Scheduled").length;
+      const spend=(S.expenses||[]).reduce((a,b)=>a+(Number(b.amount)||0),0);
+      dashSpend.textContent="$"+spend.toFixed(2);
+      dashNights.textContent=(S.nights||[]).length;
+    }
+  }catch(e){}
+}
+function validateApp(){
+  const problems=[];
+  if((S.showItems||[]).some(x=>!x.title))problems.push("One or more show items has no title");
+  if((S.inventory||[]).some(x=>Number(x.qty)<0))problems.push("Inventory contains a negative quantity");
+  if((S.expenses||[]).some(x=>Number(x.amount)<0))problems.push("Expenses contain a negative amount");
+  return problems;
+}
+const oldSaveRef=save;
+save=function(){
+  oldSaveRef();
+  dashboardRefresh();
+  toastMsg("Saved");
+};
+window.addEventListener("load",()=>{
+  dashboardRefresh();
+  const probs=validateApp();
+  if(probs.length)toastMsg("Check data validation");
+});
+</script><div id="toast" class="toast">Saved</div><button class="fab" onclick="quickAdd()">+</button></body></html>
