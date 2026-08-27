@@ -83,8 +83,27 @@ header{padding-bottom:8px}
 <style>
 .portStatus{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.statusChip{font-size:10px;font-weight:800;padding:4px 7px;border-radius:999px;background:#241c2b;color:#a99daf;border:1px solid #3a2c45}.statusChip.on{background:#17331d;color:#8af09b;border-color:#2e6b39}.controllerProgress{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin:10px 0}.controllerProgress .cp{background:#0e0b13;border:1px solid #33273d;border-radius:10px;padding:8px;text-align:center}.controllerProgress .cp b{display:block;font-size:17px}.portEditor{position:fixed;inset:0;background:#000b;z-index:100;display:none;align-items:flex-end;justify-content:center}.portEditor.open{display:flex}.portEditorCard{width:min(680px,100%);max-height:88vh;overflow:auto;background:#17111e;border:1px solid #5a3c6d;border-radius:20px 20px 0 0;padding:18px;box-sizing:border-box}.portEditorGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.portEditorGrid label{font-size:11px;color:#b8aabe}.portEditorGrid input,.portEditorGrid select,.portEditorGrid textarea{width:100%;box-sizing:border-box;margin-top:5px}.portEditorGrid .full{grid-column:1/-1}.checkRow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.checkTile{background:#0e0b13;border:1px solid #33273d;border-radius:12px;padding:10px;text-align:center}.checkTile input{width:22px;height:22px}@media(max-width:600px){.portEditorGrid{grid-template-columns:1fr}.portEditorGrid .full{grid-column:auto}}
 </style>
+
+<style>
+.installModeSummary{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+.installModeSummary div{background:#0e0b13;border:1px solid #33273d;border-radius:12px;padding:10px}
+.installModeSummary b{font-size:20px;display:block}.installModeSummary span{font-size:11px;color:#b8aabe}
+.installFilters{display:flex;gap:7px;overflow-x:auto;margin:10px 0;padding-bottom:3px}
+.installFilters button{white-space:nowrap;padding:9px 11px}.installFilters button.active{border-color:#b14cff;color:#e6c5ff}
+.installFilters select{min-width:145px}
+.installFieldCard{background:#17111e;border:1px solid #392747;border-radius:15px;padding:12px;margin:8px 0}
+.installFieldTop{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.installFieldTop .nodes{font-weight:900;font-size:18px}
+.installActions{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.installAction{padding:12px 5px;border-radius:11px;background:#0e0b13;border:1px solid #403049;color:#b8aabe;font-size:11px;font-weight:900}
+.installAction.on{background:#17331d;border-color:#2e6b39;color:#8af09b}
+.installAction.next{border-color:#8d35d0;color:#e6c5ff}
+.installEdit{margin-top:8px;width:100%;padding:8px;font-size:11px}
+.controllerDivider{font-size:12px;font-weight:900;color:#cf8cff;margin:15px 2px 5px}
+</style>
+
 </head><body>
-<header><div class="brand"><b>SPECTRAL</b> LIGHTS</div><div class="muted">CONTROL CENTER • HALLOWEEN 2026 • v11</div></header><main>
+<header><div class="brand"><b>SPECTRAL</b> LIGHTS</div><div class="muted">CONTROL CENTER • HALLOWEEN 2026 • v12</div></header><main>
 <div class="hero"><div class="row"><div><b class="green">● SHOW BUILD ACTIVE</b><div class="muted" id="cd"></div></div><div><b>97.5 FM</b><div class="muted">6:30–11:00 PM</div></div></div><div class="stats"><div class="stat"><strong>7,151</strong><span class="muted">Nodes</span></div><div class="stat"><strong>3</strong><span class="muted">Falcons</span></div><div class="stat"><strong>45</strong><span class="muted">Ports Used</span></div><div class="stat"><strong id="readyStat">0%</strong><span class="muted">Display Ready</span></div></div><div class="progressWrap"><div class="progressLabel"><b>Installation Progress</b><span class="badge" id="readyBadge">0% complete</span></div><div class="progressBar"><div class="progressFill" id="readyBar"></div></div></div></div>
 
 <div class="topActions">
@@ -102,12 +121,32 @@ header{padding-bottom:8px}
   <div class="dashCard"><small>Nights Logged</small><b id="dashNights">0</b></div>
 </div>
 
-<div class="navScroller"><div class="tabs" style="grid-template-columns:repeat(4,1fr)"><button class="active" data-t="props">Props</button><button data-t="controllers">Controllers</button><button data-t="maintenance">Maintenance</button><button data-t="inventory">Inventory</button><button data-t="progress">Progress</button><button data-t="showplanner">Show Planner</button><button data-t="checklist">Checklist</button><button data-t="settings">Backup</button><button data-t="show">Show</button><button data-t="appsettings">Settings</button><button data-t="expenses">Expenses</button><button data-t="social">Social</button><button data-t="nightlog">Night Log</button></div></div>
+<div class="navScroller"><div class="tabs" style="grid-template-columns:repeat(4,1fr)"><button class="active" data-t="props">Props</button><button data-t="controllers">Controllers</button><button data-t="installmode">Installation</button><button data-t="maintenance">Maintenance</button><button data-t="inventory">Inventory</button><button data-t="progress">Progress</button><button data-t="showplanner">Show Planner</button><button data-t="checklist">Checklist</button><button data-t="settings">Backup</button><button data-t="show">Show</button><button data-t="appsettings">Settings</button><button data-t="expenses">Expenses</button><button data-t="social">Social</button><button data-t="nightlog">Night Log</button></div></div>
 <section id="props" class="panel active"><h2>Prop Inventory</h2><div id="plist"></div></section>
 <section id="controllers" class="panel"><h2>Falcon Controller & Port Map</h2>
 <div class="controllerSummary"><div class="summaryBox"><b id="ctrlUsed">45</b><span class="mini">Ports Used</span></div><div class="summaryBox"><b id="ctrlSpare">3</b><span class="mini">Spare Ports</span></div><div class="summaryBox"><b id="ctrlNodes">7,151</b><span class="mini">Mapped Nodes</span></div><div class="summaryBox"><b>20%</b><span class="mini">Show Brightness</span></div></div>
 <div id="controllerBuildSummary" class="card" style="text-align:center"></div><div class="portLegend"><span><i class="dot"></i>WS2811</span><span><i class="dot mag"></i>Magicolor Pro</span><span><i class="dot warn"></i>Review capacity</span><span><i class="dot spareDot"></i>Spare</span></div>
 <div class="notice">Planning map only. Final current draw, voltage drop and fuse sizing should be verified on the actual display before show operation.</div><div id="clist"></div></section>
+
+<section id="installmode" class="panel">
+  <div class="sectionHead"><div><h2 style="margin-bottom:3px">Installation Mode</h2><div class="muted">Fast field checklist • tap status to advance</div></div><button class="smallbtn" onclick="renderInstallMode()">Refresh</button></div>
+  <div class="card">
+    <div class="installModeSummary">
+      <div><b id="imInstalled">0/45</b><span>Installed</span></div>
+      <div><b id="imTested">0/45</b><span>Tested</span></div>
+      <div><b id="imReady">0/45</b><span>Ready</span></div>
+    </div>
+    <div class="progressBar" style="margin-top:10px"><div class="progressFill" id="imBar"></div></div>
+  </div>
+  <div class="installFilters">
+    <button class="active" onclick="setInstallFilter('all',this)">All</button>
+    <button onclick="setInstallFilter('notready',this)">Needs Work</button>
+    <button onclick="setInstallFilter('ready',this)">Ready</button>
+    <select id="imController" onchange="renderInstallMode()"><option value="all">All Controllers</option><option value="0">F16V5 #1</option><option value="1">F16V5 #2</option><option value="2">F16V4 #3</option></select>
+  </div>
+  <div id="installModeList"></div>
+</section>
+
 <section id="maintenance" class="panel"><h2>Maintenance Log</h2><div class="card"><select id="iprop"></select><input id="ititle" placeholder="Issue e.g. Pixel 187 dead"><textarea id="inotes" placeholder="Notes"></textarea><button onclick="addIssue()">Add Issue</button></div><div id="ilist"></div></section>
 <section id="inventory" class="panel"><h2>Inventory & Spare Parts</h2>
 <div class="toolbar"><button onclick="addInventoryItem()">+ Add Item</button><button onclick="showLowStock()">Show Low Stock</button><button onclick="renderInventory()">Show All</button></div>
@@ -641,4 +680,55 @@ window.addEventListener("load",()=>{
   const probs=validateApp();
   if(probs.length)toastMsg("Check data validation");
 });
+
+let installFilter="all";
+function setInstallFilter(f,btn){
+  installFilter=f;
+  document.querySelectorAll(".installFilters button").forEach(b=>b.classList.remove("active"));
+  if(btn)btn.classList.add("active");
+  renderInstallMode();
+}
+function advanceInstall(ci,pi,stage){
+  let st=getPortStatus(ci,pi);
+  if(stage==="installed"){
+    st.installed=!st.installed;
+    if(!st.installed){st.tested=false;st.ready=false}
+  }else if(stage==="tested"){
+    st.tested=!st.tested;
+    if(st.tested)st.installed=true;
+    if(!st.tested)st.ready=false;
+  }else if(stage==="ready"){
+    st.ready=!st.ready;
+    if(st.ready){st.installed=true;st.tested=true}
+  }
+  save();ctrls();renderInstallMode();
+}
+function renderInstallMode(){
+  if(!document.getElementById("installModeList"))return;
+  const map=S.controllerMap||C, ctrlSel=document.getElementById("imController")?.value||"all";
+  let rows=[],used=0,installed=0,tested=0,ready=0,lastController=-1;
+  map.forEach((c,ci)=>c[1].forEach((raw,pi)=>{
+    let p=parsePort(raw); if(!p.nodes)return;
+    used++; let st=getPortStatus(ci,pi);
+    if(st.installed)installed++; if(st.tested)tested++; if(st.ready)ready++;
+    if(ctrlSel!=="all" && Number(ctrlSel)!==ci)return;
+    if(installFilter==="ready"&&!st.ready)return;
+    if(installFilter==="notready"&&st.ready)return;
+    if(lastController!==ci){rows.push(`<div class="controllerDivider">${c[0]}</div>`);lastController=ci}
+    let type=st.type||p.type;
+    rows.push(`<div class="installFieldCard">
+      <div class="installFieldTop"><div><b>P${pi+1} • ${p.name}</b><div class="mini">${c[0]} • ${type}</div></div><div class="nodes">${p.nodes}</div></div>
+      <div class="installActions">
+        <button class="installAction ${st.installed?"on":(!st.tested&&!st.ready?"next":"")}" onclick="advanceInstall(${ci},${pi},'installed')">✓ Installed</button>
+        <button class="installAction ${st.tested?"on":(st.installed&&!st.tested?"next":"")}" onclick="advanceInstall(${ci},${pi},'tested')">✓ Tested</button>
+        <button class="installAction ${st.ready?"on":(st.tested&&!st.ready?"next":"")}" onclick="advanceInstall(${ci},${pi},'ready')">★ Ready</button>
+      </div>
+      <button class="installEdit" onclick="editPort(${ci},${pi})">Edit details / notes</button>
+    </div>`);
+  }));
+  imInstalled.textContent=`${installed}/${used}`;imTested.textContent=`${tested}/${used}`;imReady.textContent=`${ready}/${used}`;
+  imBar.style.width=(used?Math.round(ready/used*100):0)+"%";
+  installModeList.innerHTML=rows.join("")||'<div class="emptyState">No outputs match this filter.</div>';
+}
+
 </script><div id="toast" class="toast">Saved</div><button class="fab" onclick="quickAdd()">+</button></body></html>
