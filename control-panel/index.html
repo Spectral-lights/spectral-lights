@@ -102,8 +102,22 @@ header{padding-bottom:8px}
 .controllerDivider{font-size:12px;font-weight:900;color:#cf8cff;margin:15px 2px 5px}
 </style>
 
+
+<style>
+.opsStatusHero{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#17111e,#0e0b13);border:1px solid #493554;border-radius:16px;padding:16px;margin:10px 0}
+.opsDot{display:inline-block;width:11px;height:11px;border-radius:50%;background:#796b82;margin-right:8px}.opsDot.running{background:#73e34c;box-shadow:0 0 12px #73e34c88}.opsDot.paused{background:#ffb229}.opsDot.blackout{background:#ff4d5f;box-shadow:0 0 12px #ff4d5f88}
+.opsGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.opsStat{background:#17111e;border:1px solid #392747;border-radius:13px;padding:11px}.opsStat span{display:block;color:#b8aabe;font-size:10px}.opsStat b{display:block;margin-top:3px;font-size:14px}
+.nowTitle{font-size:22px;font-weight:900;margin:5px 0}
+.opsControls{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:7px;margin:10px 0}.opsControls button{min-height:52px}.opsStart{background:#17331d!important;border-color:#2e6b39!important;color:#8af09b!important}
+.opsRange{width:100%;margin-top:12px}
+.blackoutBtn{width:100%;min-height:58px;background:#4a1620!important;border-color:#a32f43!important;color:#ffb8c0!important;font-size:14px;margin:2px 0 10px}
+.blackoutBtn.active{background:#8d1428!important;color:white!important;box-shadow:0 0 18px #ff4d5f55}
+.opsTrack{display:flex;justify-content:space-between;gap:8px;align-items:center;background:#0e0b13;border-radius:10px;padding:9px;margin-top:6px;border:1px solid #33273d}.opsTrack.playing{border-color:#73e34c}.opsTrack .trackNum{color:#b8aabe;font-size:11px;min-width:22px}
+@media(max-width:650px){.opsGrid{grid-template-columns:1fr 1fr}.opsControls{grid-template-columns:1fr 1fr}.opsControls .opsStart{grid-column:1/-1}}
+</style>
+
 </head><body>
-<header><div class="brand"><b>SPECTRAL</b> LIGHTS</div><div class="muted">CONTROL CENTER • HALLOWEEN 2026 • v12</div></header><main>
+<header><div class="brand"><b>SPECTRAL</b> LIGHTS</div><div class="muted">CONTROL CENTER • HALLOWEEN 2026 • v13</div></header><main>
 <div class="hero"><div class="row"><div><b class="green">● SHOW BUILD ACTIVE</b><div class="muted" id="cd"></div></div><div><b>97.5 FM</b><div class="muted">6:30–11:00 PM</div></div></div><div class="stats"><div class="stat"><strong>7,151</strong><span class="muted">Nodes</span></div><div class="stat"><strong>3</strong><span class="muted">Falcons</span></div><div class="stat"><strong>45</strong><span class="muted">Ports Used</span></div><div class="stat"><strong id="readyStat">0%</strong><span class="muted">Display Ready</span></div></div><div class="progressWrap"><div class="progressLabel"><b>Installation Progress</b><span class="badge" id="readyBadge">0% complete</span></div><div class="progressBar"><div class="progressFill" id="readyBar"></div></div></div></div>
 
 <div class="topActions">
@@ -121,7 +135,7 @@ header{padding-bottom:8px}
   <div class="dashCard"><small>Nights Logged</small><b id="dashNights">0</b></div>
 </div>
 
-<div class="navScroller"><div class="tabs" style="grid-template-columns:repeat(4,1fr)"><button class="active" data-t="props">Props</button><button data-t="controllers">Controllers</button><button data-t="installmode">Installation</button><button data-t="maintenance">Maintenance</button><button data-t="inventory">Inventory</button><button data-t="progress">Progress</button><button data-t="showplanner">Show Planner</button><button data-t="checklist">Checklist</button><button data-t="settings">Backup</button><button data-t="show">Show</button><button data-t="appsettings">Settings</button><button data-t="expenses">Expenses</button><button data-t="social">Social</button><button data-t="nightlog">Night Log</button></div></div>
+<div class="navScroller"><div class="tabs" style="grid-template-columns:repeat(4,1fr)"><button class="active" data-t="props">Props</button><button data-t="controllers">Controllers</button><button data-t="installmode">Installation</button><button data-t="operations">Operations</button><button data-t="maintenance">Maintenance</button><button data-t="inventory">Inventory</button><button data-t="progress">Progress</button><button data-t="showplanner">Show Planner</button><button data-t="checklist">Checklist</button><button data-t="settings">Backup</button><button data-t="show">Show</button><button data-t="appsettings">Settings</button><button data-t="expenses">Expenses</button><button data-t="social">Social</button><button data-t="nightlog">Night Log</button></div></div>
 <section id="props" class="panel active"><h2>Prop Inventory</h2><div id="plist"></div></section>
 <section id="controllers" class="panel"><h2>Falcon Controller & Port Map</h2>
 <div class="controllerSummary"><div class="summaryBox"><b id="ctrlUsed">45</b><span class="mini">Ports Used</span></div><div class="summaryBox"><b id="ctrlSpare">3</b><span class="mini">Spare Ports</span></div><div class="summaryBox"><b id="ctrlNodes">7,151</b><span class="mini">Mapped Nodes</span></div><div class="summaryBox"><b>20%</b><span class="mini">Show Brightness</span></div></div>
@@ -145,6 +159,52 @@ header{padding-bottom:8px}
     <select id="imController" onchange="renderInstallMode()"><option value="all">All Controllers</option><option value="0">F16V5 #1</option><option value="1">F16V5 #2</option><option value="2">F16V4 #3</option></select>
   </div>
   <div id="installModeList"></div>
+</section>
+
+
+<section id="operations" class="panel">
+  <div class="sectionHead"><div><h2 style="margin-bottom:3px">Show Operations</h2><div class="muted">Simulation mode • FPP connection will be added later</div></div><span id="opsModeBadge" class="badge">SIMULATION</span></div>
+
+  <div class="opsStatusHero">
+    <div><span class="opsDot" id="opsDot"></span><b id="opsState">SHOW STOPPED</b><div class="muted" id="opsClock">--:--:--</div></div>
+    <div style="text-align:right"><b id="opsFm">97.5 FM</b><div class="muted">Spectral Lights</div></div>
+  </div>
+
+  <div class="opsGrid">
+    <div class="opsStat"><span>FPP</span><b id="opsFpp">Not Connected</b></div>
+    <div class="opsStat"><span>Playlist</span><b id="opsPlaylistName">Halloween 2026</b></div>
+    <div class="opsStat"><span>Volume</span><b id="opsVolText">70%</b></div>
+    <div class="opsStat"><span>Brightness</span><b>20%</b></div>
+  </div>
+
+  <div class="card">
+    <div class="muted">NOW PLAYING</div>
+    <div class="nowTitle" id="opsNow">—</div>
+    <div class="muted">Up next: <span id="opsNext">—</span></div>
+    <div class="progressBar" style="margin-top:12px"><div class="progressFill" id="opsSongBar"></div></div>
+    <div class="row" style="margin-top:6px"><span class="mini" id="opsElapsed">0:00</span><span class="mini" id="opsDuration">0:00</span></div>
+  </div>
+
+  <div class="opsControls">
+    <button class="opsStart" id="opsStartBtn" onclick="opsToggleShow()">▶ Start Show</button>
+    <button onclick="opsNextTrack()">⏭ Next</button>
+    <button onclick="opsTogglePause()" id="opsPauseBtn">⏸ Pause</button>
+    <button onclick="opsStop()">■ Stop</button>
+  </div>
+
+  <div class="card">
+    <div class="sectionHead"><b>Master Volume</b><b id="opsVolLabel">70%</b></div>
+    <input id="opsVolume" class="opsRange" type="range" min="0" max="100" value="70" oninput="opsSetVolume(this.value)">
+  </div>
+
+  <button class="blackoutBtn" id="blackoutBtn" onclick="opsToggleBlackout()">⚠ EMERGENCY BLACKOUT</button>
+
+  <div class="card">
+    <div class="sectionHead"><b>Simulation Playlist</b><span class="mini" id="opsTrackCount"></span></div>
+    <div id="opsPlaylist"></div>
+  </div>
+
+  <div class="notice">These controls currently simulate show operation in this browser only. They do not send commands to the Raspberry Pi, FPP, Falcon controllers, or lights. FPP integration can be connected later without changing this screen.</div>
 </section>
 
 <section id="maintenance" class="panel"><h2>Maintenance Log</h2><div class="card"><select id="iprop"></select><input id="ititle" placeholder="Issue e.g. Pixel 187 dead"><textarea id="inotes" placeholder="Notes"></textarea><button onclick="addIssue()">Add Issue</button></div><div id="ilist"></div></section>
@@ -730,5 +790,49 @@ function renderInstallMode(){
   imBar.style.width=(used?Math.round(ready/used*100):0)+"%";
   installModeList.innerHTML=rows.join("")||'<div class="emptyState">No outputs match this filter.</div>';
 }
+
+
+const OPS_DEFAULT_TRACKS=[
+ {title:"Opening Announcement",duration:30},
+ {title:"When the Lights Come On",duration:225},
+ {title:"Monster Mash",duration:180},
+ {title:"One Way or Another",duration:210},
+ {title:"Ghostbusters",duration:245},
+ {title:"My Songs Know What You Did in the Dark",duration:187},
+ {title:"Thriller",duration:358},
+ {title:"Closing Announcement",duration:30}
+];
+if(!S.ops)S.ops={running:false,paused:false,blackout:false,track:0,elapsed:0,volume:70,playlist:"Halloween 2026"};
+let opsTimer=null;
+function fmtTime(s){s=Math.max(0,Math.floor(s||0));return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
+function renderOperations(){
+ if(!document.getElementById("operations"))return;
+ let o=S.ops,t=OPS_DEFAULT_TRACKS[o.track]||OPS_DEFAULT_TRACKS[0],next=OPS_DEFAULT_TRACKS[(o.track+1)%OPS_DEFAULT_TRACKS.length];
+ opsState.textContent=o.blackout?"BLACKOUT ACTIVE":o.running?(o.paused?"SHOW PAUSED":"SHOW RUNNING"):"SHOW STOPPED";
+ opsDot.className="opsDot"+(o.blackout?" blackout":o.running?(o.paused?" paused":" running"):"");
+ opsNow.textContent=o.running?t.title:"—";
+ opsNext.textContent=o.running?next.title:OPS_DEFAULT_TRACKS[0].title;
+ opsElapsed.textContent=fmtTime(o.elapsed);opsDuration.textContent=fmtTime(t.duration);
+ opsSongBar.style.width=(o.running?Math.min(100,(o.elapsed/t.duration)*100):0)+"%";
+ opsVolume.value=o.volume;opsVolText.textContent=o.volume+"%";opsVolLabel.textContent=o.volume+"%";
+ opsPlaylistName.textContent=o.playlist;opsTrackCount.textContent=OPS_DEFAULT_TRACKS.length+" items";
+ opsStartBtn.textContent=o.running?"↻ Restart Show":"▶ Start Show";
+ opsPauseBtn.textContent=o.paused?"▶ Resume":"⏸ Pause";
+ blackoutBtn.classList.toggle("active",!!o.blackout);
+ opsPlaylist.innerHTML=OPS_DEFAULT_TRACKS.map((x,i)=>`<div class="opsTrack ${o.running&&i===o.track?"playing":""}" onclick="opsSelectTrack(${i})"><span class="trackNum">${i+1}</span><div style="flex:1"><b>${x.title}</b><div class="mini">${fmtTime(x.duration)}</div></div>${o.running&&i===o.track?'<span class="green">● PLAYING</span>':""}</div>`).join("");
+}
+function opsEnsureTimer(){
+ if(opsTimer)return;
+ opsTimer=setInterval(()=>{if(S.ops.running&&!S.ops.paused&&!S.ops.blackout){S.ops.elapsed++;let t=OPS_DEFAULT_TRACKS[S.ops.track];if(S.ops.elapsed>=t.duration){S.ops.track=(S.ops.track+1)%OPS_DEFAULT_TRACKS.length;S.ops.elapsed=0}save();renderOperations()}},1000);
+}
+function opsToggleShow(){S.ops.running=true;S.ops.paused=false;S.ops.blackout=false;S.ops.track=0;S.ops.elapsed=0;save();renderOperations();opsEnsureTimer();toastMsg("Simulation show started")}
+function opsStop(){S.ops.running=false;S.ops.paused=false;S.ops.elapsed=0;save();renderOperations();toastMsg("Simulation show stopped")}
+function opsTogglePause(){if(!S.ops.running)return toastMsg("Start the show first");S.ops.paused=!S.ops.paused;save();renderOperations()}
+function opsNextTrack(){if(!S.ops.running)return toastMsg("Start the show first");S.ops.track=(S.ops.track+1)%OPS_DEFAULT_TRACKS.length;S.ops.elapsed=0;save();renderOperations()}
+function opsSelectTrack(i){S.ops.track=i;S.ops.elapsed=0;if(!S.ops.running)S.ops.running=true;S.ops.paused=false;save();renderOperations();opsEnsureTimer()}
+function opsSetVolume(v){S.ops.volume=Number(v);opsVolText.textContent=v+"%";opsVolLabel.textContent=v+"%";save()}
+function opsToggleBlackout(){S.ops.blackout=!S.ops.blackout;save();renderOperations();toastMsg(S.ops.blackout?"Simulation blackout ON":"Simulation blackout cleared")}
+function opsClockTick(){let e=document.getElementById("opsClock");if(e)e.textContent=new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit",second:"2-digit"})}
+setInterval(opsClockTick,1000);opsClockTick();opsEnsureTimer();
 
 </script><div id="toast" class="toast">Saved</div><button class="fab" onclick="quickAdd()">+</button></body></html>
