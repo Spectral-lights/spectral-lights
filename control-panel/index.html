@@ -116,8 +116,24 @@ header{padding-bottom:8px}
 @media(max-width:650px){.opsGrid{grid-template-columns:1fr 1fr}.opsControls{grid-template-columns:1fr 1fr}.opsControls .opsStart{grid-column:1/-1}}
 </style>
 
+
+<style>
+.ccHero{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,#18101f,#0d0a12);border:1px solid #4b3558;border-radius:18px;padding:18px;margin:10px 0}
+.ccHeroState{font-size:25px;font-weight:900;margin:4px 0}.ccFm{font-size:28px;font-weight:900}
+.ccGrid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.ccMetric{background:#17111e;border:1px solid #392747;border-radius:13px;padding:12px}.ccMetric span,.ccMetric small{display:block;color:#b8aabe}.ccMetric span{font-size:10px}.ccMetric b{display:block;font-size:15px;margin:4px 0}.ccMetric small{font-size:10px}
+.ccTwoCol{display:grid;grid-template-columns:1.15fr .85fr;gap:10px;margin:10px 0}
+.ccQuickControls{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px}.ccQuickControls button{min-height:44px}
+.ccScheduleLine{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid #2b2231}.ccScheduleLine span{color:#b8aabe}
+.ccReadinessRow{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}.ccReadinessRow div{text-align:center;background:#0f0b14;border-radius:10px;padding:9px}.ccReadinessRow b{display:block;font-size:20px}.ccReadinessRow span{display:block;color:#b8aabe;font-size:10px}
+.ccIssue{background:#0f0b14;border:1px solid #30253a;border-radius:10px;padding:9px;margin-top:6px}.ccIssue b{display:block}.ccIssue .mini{margin-top:3px}
+.ccLogEntry{background:#0f0b14;border-left:3px solid #6c4a7a;border-radius:8px;padding:9px;margin-top:7px}.ccLogEntry time{display:block;color:#a99bad;font-size:10px;margin-bottom:3px}
+.ccEmergency{display:grid;grid-template-columns:1fr minmax(220px,360px);gap:12px;align-items:center;background:#1b0e13;border:1px solid #6c2431;border-radius:16px;padding:14px;margin:10px 0}.ccEmergency .blackoutBtn{margin:0}
+#ccNightNote{width:100%;box-sizing:border-box}
+@media(max-width:760px){.ccGrid4{grid-template-columns:1fr 1fr}.ccTwoCol{grid-template-columns:1fr}.ccQuickControls{grid-template-columns:1fr 1fr}.ccEmergency{grid-template-columns:1fr}.ccEmergency .blackoutBtn{width:100%}}
+</style>
+
 </head><body>
-<header><div class="brand"><b>SPECTRAL</b> LIGHTS</div><div class="muted">CONTROL CENTER • HALLOWEEN 2026 • v13</div></header><main>
+<header><div class="brand"><b>SPECTRAL</b> LIGHTS</div><div class="muted">CONTROL CENTER • HALLOWEEN 2026 • v14</div></header><main>
 <div class="hero"><div class="row"><div><b class="green">● SHOW BUILD ACTIVE</b><div class="muted" id="cd"></div></div><div><b>97.5 FM</b><div class="muted">6:30–11:00 PM</div></div></div><div class="stats"><div class="stat"><strong>7,151</strong><span class="muted">Nodes</span></div><div class="stat"><strong>3</strong><span class="muted">Falcons</span></div><div class="stat"><strong>45</strong><span class="muted">Ports Used</span></div><div class="stat"><strong id="readyStat">0%</strong><span class="muted">Display Ready</span></div></div><div class="progressWrap"><div class="progressLabel"><b>Installation Progress</b><span class="badge" id="readyBadge">0% complete</span></div><div class="progressBar"><div class="progressFill" id="readyBar"></div></div></div></div>
 
 <div class="topActions">
@@ -135,7 +151,7 @@ header{padding-bottom:8px}
   <div class="dashCard"><small>Nights Logged</small><b id="dashNights">0</b></div>
 </div>
 
-<div class="navScroller"><div class="tabs" style="grid-template-columns:repeat(4,1fr)"><button class="active" data-t="props">Props</button><button data-t="controllers">Controllers</button><button data-t="installmode">Installation</button><button data-t="operations">Operations</button><button data-t="maintenance">Maintenance</button><button data-t="inventory">Inventory</button><button data-t="progress">Progress</button><button data-t="showplanner">Show Planner</button><button data-t="checklist">Checklist</button><button data-t="settings">Backup</button><button data-t="show">Show</button><button data-t="appsettings">Settings</button><button data-t="expenses">Expenses</button><button data-t="social">Social</button><button data-t="nightlog">Night Log</button></div></div>
+<div class="navScroller"><div class="tabs" style="grid-template-columns:repeat(4,1fr)"><button class="active" data-t="props">Props</button><button data-t="controllers">Controllers</button><button data-t="installmode">Installation</button><button data-t="operations">Operations</button><button data-t="commandcenter">Command Center</button><button data-t="maintenance">Maintenance</button><button data-t="inventory">Inventory</button><button data-t="progress">Progress</button><button data-t="showplanner">Show Planner</button><button data-t="checklist">Checklist</button><button data-t="settings">Backup</button><button data-t="show">Show</button><button data-t="appsettings">Settings</button><button data-t="expenses">Expenses</button><button data-t="social">Social</button><button data-t="nightlog">Night Log</button></div></div>
 <section id="props" class="panel active"><h2>Prop Inventory</h2><div id="plist"></div></section>
 <section id="controllers" class="panel"><h2>Falcon Controller & Port Map</h2>
 <div class="controllerSummary"><div class="summaryBox"><b id="ctrlUsed">45</b><span class="mini">Ports Used</span></div><div class="summaryBox"><b id="ctrlSpare">3</b><span class="mini">Spare Ports</span></div><div class="summaryBox"><b id="ctrlNodes">7,151</b><span class="mini">Mapped Nodes</span></div><div class="summaryBox"><b>20%</b><span class="mini">Show Brightness</span></div></div>
@@ -205,6 +221,99 @@ header{padding-bottom:8px}
   </div>
 
   <div class="notice">These controls currently simulate show operation in this browser only. They do not send commands to the Raspberry Pi, FPP, Falcon controllers, or lights. FPP integration can be connected later without changing this screen.</div>
+</section>
+
+
+<section id="commandcenter" class="panel">
+  <div class="sectionHead">
+    <div>
+      <h2 style="margin-bottom:3px">Show Night Command Center</h2>
+      <div class="muted">Single-screen operational view • simulation/manual data until FPP is connected</div>
+    </div>
+    <span class="badge" id="ccModeBadge">SIMULATION</span>
+  </div>
+
+  <div class="ccHero">
+    <div>
+      <div class="muted">SHOW STATUS</div>
+      <div class="ccHeroState"><span class="opsDot" id="ccDot"></span><span id="ccShowState">SHOW STOPPED</span></div>
+      <div class="muted" id="ccClock">--:--:--</div>
+    </div>
+    <div style="text-align:right">
+      <div class="muted">TUNE TO</div>
+      <div class="ccFm">97.5 FM</div>
+      <div class="muted">Statham, Georgia</div>
+    </div>
+  </div>
+
+  <div class="ccGrid4">
+    <div class="ccMetric"><span>FPP</span><b id="ccFpp">Not Connected</b><small>Gateway pending</small></div>
+    <div class="ccMetric"><span>Controllers</span><b id="ccControllers">Manual</b><small>3 configured</small></div>
+    <div class="ccMetric"><span>Installation</span><b id="ccReady">0 / 45 Ready</b><small id="ccReadySub">0 installed • 0 tested</small></div>
+    <div class="ccMetric"><span>Brightness</span><b>20%</b><small>Show planning level</small></div>
+  </div>
+
+  <div class="ccTwoCol">
+    <div class="card">
+      <div class="sectionHead"><b>Now Playing</b><span class="mini" id="ccPlaylist">Halloween 2026</span></div>
+      <div class="nowTitle" id="ccNow">—</div>
+      <div class="muted">Up next: <span id="ccNext">—</span></div>
+      <div class="progressBar" style="margin-top:12px"><div class="progressFill" id="ccSongBar"></div></div>
+      <div class="row" style="margin-top:6px"><span class="mini" id="ccElapsed">0:00</span><span class="mini" id="ccDuration">0:00</span></div>
+      <div class="ccQuickControls">
+        <button class="opsStart" onclick="opsToggleShow();renderCommandCenter()">▶ Start</button>
+        <button onclick="opsTogglePause();renderCommandCenter()">⏯ Pause</button>
+        <button onclick="opsNextTrack();renderCommandCenter()">⏭ Next</button>
+        <button onclick="opsStop();renderCommandCenter()">■ Stop</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="sectionHead"><b>Tonight's Schedule</b><span class="mini">Halloween 2026</span></div>
+      <div class="ccScheduleLine"><span>Show Window</span><b>6:30 PM – 11:00 PM</b></div>
+      <div class="ccScheduleLine"><span>Season</span><b>Sep 25 – Nov 1</b></div>
+      <div class="ccScheduleLine"><span>Frequency</span><b>97.5 FM</b></div>
+      <div class="ccScheduleLine"><span>Mode</span><b id="ccScheduleMode">Nightly</b></div>
+      <div class="notice" style="margin-top:10px">Schedule shown here is informational until FPP scheduling is connected.</div>
+    </div>
+  </div>
+
+  <div class="ccTwoCol">
+    <div class="card">
+      <div class="sectionHead"><b>Operational Readiness</b><span class="mini" id="ccReadinessPct">0%</span></div>
+      <div class="progressBar"><div class="progressFill" id="ccReadyBar"></div></div>
+      <div class="ccReadinessRow">
+        <div><b id="ccInstalled">0</b><span>Installed</span></div>
+        <div><b id="ccTested">0</b><span>Tested</span></div>
+        <div><b id="ccReadyCount">0</b><span>Ready</span></div>
+      </div>
+      <button style="width:100%;margin-top:10px" onclick="openTabById('installmode')">Open Installation Mode</button>
+    </div>
+
+    <div class="card">
+      <div class="sectionHead"><b>Maintenance / Issues</b><span class="mini" id="ccIssueCount">0 open</span></div>
+      <div id="ccIssues"></div>
+      <button style="width:100%;margin-top:10px" onclick="openTabById('maintenance')">Open Maintenance</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sectionHead"><b>Show Night Log</b><span class="mini">Saved on this device</span></div>
+    <textarea id="ccNightNote" rows="3" placeholder="Quick note: weather, traffic, failed prop, reset performed, visitor issue, etc."></textarea>
+    <div class="row" style="margin-top:8px">
+      <button onclick="ccSaveNote()">Save Log Entry</button>
+      <button onclick="ccClearDraft()">Clear</button>
+    </div>
+    <div id="ccNightLog" style="margin-top:10px"></div>
+  </div>
+
+  <div class="ccEmergency">
+    <div>
+      <b>Emergency Controls</b>
+      <div class="muted">Simulation only — no hardware commands are being sent.</div>
+    </div>
+    <button class="blackoutBtn" id="ccBlackoutBtn" onclick="opsToggleBlackout();renderCommandCenter()">⚠ EMERGENCY BLACKOUT</button>
+  </div>
 </section>
 
 <section id="maintenance" class="panel"><h2>Maintenance Log</h2><div class="card"><select id="iprop"></select><input id="ititle" placeholder="Issue e.g. Pixel 187 dead"><textarea id="inotes" placeholder="Notes"></textarea><button onclick="addIssue()">Add Issue</button></div><div id="ilist"></div></section>
@@ -834,5 +943,86 @@ function opsSetVolume(v){S.ops.volume=Number(v);opsVolText.textContent=v+"%";ops
 function opsToggleBlackout(){S.ops.blackout=!S.ops.blackout;save();renderOperations();toastMsg(S.ops.blackout?"Simulation blackout ON":"Simulation blackout cleared")}
 function opsClockTick(){let e=document.getElementById("opsClock");if(e)e.textContent=new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit",second:"2-digit"})}
 setInterval(opsClockTick,1000);opsClockTick();opsEnsureTimer();
+
+
+if(!S.commandCenter)S.commandCenter={nightLog:[]};
+
+function openTabById(id){
+ const btn=document.querySelector(`.tabs button[data-t="${id}"]`);
+ if(btn){btn.click();window.scrollTo({top:0,behavior:"smooth"})}
+}
+
+function ccStatusCounts(){
+ const vals=Object.values(S.controllerStatus||{});
+ return {
+  installed:vals.filter(x=>x&&x.installed).length,
+  tested:vals.filter(x=>x&&x.tested).length,
+  ready:vals.filter(x=>x&&x.ready).length
+ };
+}
+
+function ccGetIssues(){
+ let arr=[];
+ if(Array.isArray(S.issues))arr=S.issues;
+ else if(S.issues && typeof S.issues==="object")arr=Object.values(S.issues);
+ return arr.filter(x=>{
+   if(!x)return false;
+   let st=String(x.status||x.state||"").toLowerCase();
+   return !(st==="closed"||st==="resolved"||st==="done"||st==="complete");
+ });
+}
+
+function ccIssueTitle(x){
+ return x.title||x.name||x.issue||x.description||"Open issue";
+}
+
+function renderCommandCenter(){
+ if(!document.getElementById("commandcenter"))return;
+ let o=S.ops||{}, t=OPS_DEFAULT_TRACKS[o.track||0]||OPS_DEFAULT_TRACKS[0], next=OPS_DEFAULT_TRACKS[((o.track||0)+1)%OPS_DEFAULT_TRACKS.length];
+ ccShowState.textContent=o.blackout?"BLACKOUT ACTIVE":o.running?(o.paused?"SHOW PAUSED":"SHOW RUNNING"):"SHOW STOPPED";
+ ccDot.className="opsDot"+(o.blackout?" blackout":o.running?(o.paused?" paused":" running"):"");
+ ccNow.textContent=o.running?t.title:"—";
+ ccNext.textContent=o.running?next.title:OPS_DEFAULT_TRACKS[0].title;
+ ccElapsed.textContent=fmtTime(o.elapsed||0);ccDuration.textContent=fmtTime(t.duration);
+ ccSongBar.style.width=(o.running?Math.min(100,((o.elapsed||0)/t.duration)*100):0)+"%";
+ ccPlaylist.textContent=o.playlist||"Halloween 2026";
+ ccBlackoutBtn.classList.toggle("active",!!o.blackout);
+
+ const c=ccStatusCounts(), total=45, pct=Math.round((c.ready/total)*100);
+ ccReady.textContent=`${c.ready} / ${total} Ready`;
+ ccReadySub.textContent=`${c.installed} installed • ${c.tested} tested`;
+ ccInstalled.textContent=c.installed;ccTested.textContent=c.tested;ccReadyCount.textContent=c.ready;
+ ccReadinessPct.textContent=pct+"%";ccReadyBar.style.width=pct+"%";
+
+ const issues=ccGetIssues();
+ ccIssueCount.textContent=issues.length+" open";
+ ccIssues.innerHTML=issues.length?issues.slice(0,4).map(x=>`<div class="ccIssue"><b>${ccIssueTitle(x)}</b><div class="mini">${x.notes||x.detail||x.status||"Needs attention"}</div></div>`).join(""):'<div class="muted" style="padding:10px 0">No open issues recorded.</div>';
+
+ const logs=(S.commandCenter&&S.commandCenter.nightLog)||[];
+ ccNightLog.innerHTML=logs.length?logs.slice().reverse().slice(0,6).map(x=>`<div class="ccLogEntry"><time>${x.time}</time>${x.text}</div>`).join(""):'<div class="muted">No show-night log entries yet.</div>';
+}
+
+function ccSaveNote(){
+ let e=document.getElementById("ccNightNote"),text=(e.value||"").trim();
+ if(!text)return toastMsg("Enter a note first");
+ if(!S.commandCenter)S.commandCenter={nightLog:[]};
+ if(!Array.isArray(S.commandCenter.nightLog))S.commandCenter.nightLog=[];
+ S.commandCenter.nightLog.push({time:new Date().toLocaleString(),text});
+ e.value="";save();renderCommandCenter();toastMsg("Show-night log entry saved");
+}
+function ccClearDraft(){let e=document.getElementById("ccNightNote");if(e)e.value=""}
+
+function ccClockTick(){
+ let e=document.getElementById("ccClock");
+ if(e)e.textContent=new Date().toLocaleTimeString([], {hour:"numeric",minute:"2-digit",second:"2-digit"});
+}
+setInterval(()=>{ccClockTick(); if(document.getElementById("commandcenter")?.classList.contains("active"))renderCommandCenter()},1000);
+ccClockTick();
+
+
+document.addEventListener("click",e=>{
+ const b=e.target.closest('.tabs button[data-t="commandcenter"]');
+ if(b)setTimeout(renderCommandCenter,0);
+});
 
 </script><div id="toast" class="toast">Saved</div><button class="fab" onclick="quickAdd()">+</button></body></html>
