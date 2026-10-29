@@ -12,7 +12,13 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-3;bac
 radial-gradient(circle at 15% 18%,rgba(154,77,255,.13),transparent 26%),
 radial-gradient(circle at 82% 16%,rgba(255,134,31,.09),transparent 22%),
 linear-gradient(180deg,transparent 0 68%,rgba(78,26,99,.13) 100%)}
-a{color:inherit}.wrap{width:min(1100px,92vw);margin:auto}.bulbs{height:16px;background:repeating-linear-gradient(90deg,var(--orange) 0 10px,transparent 10px 38px,var(--purple) 38px 48px,transparent 48px 76px,var(--green) 76px 86px,transparent 86px 114px,var(--red) 114px 124px,transparent 124px 152px);filter:drop-shadow(0 0 7px currentColor);opacity:.85;animation:bulbTwinkle 2.4s ease-in-out infinite alternate}
+a{color:inherit}.wrap{width:min(1100px,92vw);margin:auto}.bulbs{height:38px;position:relative;overflow:hidden;background:linear-gradient(180deg,transparent 0 10px,rgba(255,255,255,.28) 10px 12px,transparent 12px 100%);opacity:1}
+.bulbs:after{content:"";position:absolute;inset:7px 0 0;background:
+radial-gradient(circle at 12px 11px,#ff861f 0 5px,rgba(255,134,31,.55) 6px,transparent 12px),
+radial-gradient(circle at 50px 11px,#9a4dff 0 5px,rgba(154,77,255,.55) 6px,transparent 12px),
+radial-gradient(circle at 88px 11px,#78ff2e 0 5px,rgba(120,255,46,.55) 6px,transparent 12px),
+radial-gradient(circle at 126px 11px,#ff3434 0 5px,rgba(255,52,52,.55) 6px,transparent 12px);
+background-size:152px 28px;background-repeat:repeat-x;filter:drop-shadow(0 0 8px rgba(255,255,255,.35));animation:bulbTwinkle 1.5s ease-in-out infinite alternate}
 @keyframes bulbTwinkle{0%{opacity:.55;filter:brightness(.8) drop-shadow(0 0 4px currentColor)}50%{opacity:1;filter:brightness(1.35) drop-shadow(0 0 11px currentColor)}100%{opacity:.72;filter:brightness(1) drop-shadow(0 0 7px currentColor)}}
 header{padding:28px 0 12px;text-align:center}.logo{width:min(540px,90vw);border-radius:28px;box-shadow:0 0 40px rgba(154,77,255,.15)}
 .tagline{margin:.4rem auto 0;color:var(--muted);font-size:1.1rem}
@@ -145,8 +151,8 @@ body.intro-lock{overflow:hidden}
 </header>
 
 <div class="opening-week-banner">
-  <strong>🎃 Spectral Lights Is Now Open! 🎃</strong>
-  <span>FREE • Nightly 6:30 PM–11:00 PM • 97.5 FM • Statham, Georgia</span>
+  <strong>🎃 Halloween Is Almost Here! 🎃</strong>
+  <span>SPECTRAL LIGHTS IS RUNNING • Nightly 6:30 PM–11:00 PM • 97.5 FM • FREE • Statham, Georgia</span>
 </div>
 
 <main class="wrap">
@@ -179,19 +185,19 @@ body.intro-lock{overflow:hidden}
 
 <section aria-labelledby="countdown-heading">
   <div class="card countdown-card">
-    <div class="countdown-kicker">🎃 The haunting begins soon</div>
-    <h2 class="countdown-title" id="countdown-heading">Countdown to Halloween Opening Day</h2>
+    <div class="countdown-kicker">🎃 Halloween is almost here</div>
+    <h2 class="countdown-title" id="countdown-heading">Countdown to Halloween Night</h2>
     <div class="countdown" id="countdown" aria-live="polite">
       <div class="time-box"><span class="time-number" id="days">--</span><span class="time-label">Days</span></div>
       <div class="time-box"><span class="time-number" id="hours">--</span><span class="time-label">Hours</span></div>
       <div class="time-box"><span class="time-number" id="minutes">--</span><span class="time-label">Minutes</span></div>
       <div class="time-box"><span class="time-number" id="seconds">--</span><span class="time-label">Seconds</span></div>
     </div>
-    <p class="countdown-note" id="countdown-note">NOW OPEN • Nightly 6:30 PM–11:00 PM</p>
+    <p class="countdown-note" id="countdown-note">The lights are running nightly from 6:30 PM–11:00 PM while we count down to Halloween!</p>
     <div class="open-banner" id="open-banner" role="status" aria-live="polite">
-      <div class="open-small">Spectral Lights Presents</div>
-      <div class="open-big">Halloween Show<br>Is Now Open!</div>
-      <p class="open-sub">👻 Come enjoy the lights, music & Halloween magic! 🦇</p>
+      <div class="open-small">Spectral Lights Wishes You</div>
+      <div class="open-big">Happy Halloween!</div>
+      <p class="open-sub">🎃 The lights are running tonight • 6:30 PM–11:00 PM • 97.5 FM • FREE 👻</p>
     </div>
   </div>
 </section>
@@ -254,7 +260,7 @@ body.intro-lock{overflow:hidden}
       <h2 class="section-title">📣 Follow Spectral Lights</h2>
       <p class="info">Follow Spectral Lights on Facebook for announcements, weather updates, schedule changes, photos, new songs, and behind-the-scenes posts.</p>
       <div class="btns"><a class="btn primary" href="https://www.facebook.com/SpectralLightsGA" target="_blank" rel="noopener">Follow us on Facebook</a></div>
-      <p class="small">Questions? Email <a href="mailto:support@spectral-lights.com">support@spectral-lights.com</a></p>
+      <p class="small">Questions? Email <a href="mailto:contact@spectral-lights.com">contact@spectral-lights.com</a></p>
     </div>
   </div>
 </section>
@@ -264,9 +270,9 @@ body.intro-lock{overflow:hidden}
 
 <script>
 (function(){
-  // Countdown to the start of September 25 in Statham, Georgia (Eastern Time).
-  // Because exact show hours have not been announced, this counts down to opening day.
-  const target = new Date('2026-09-25T18:30:00-04:00').getTime();
+  // Countdown to Halloween night in Statham, Georgia (Eastern Time).
+  // Spectral Lights continues running nightly while this countdown approaches Halloween.
+  const target = new Date('2026-10-31T18:30:00-04:00').getTime();
   const els = {
     days: document.getElementById('days'),
     hours: document.getElementById('hours'),
@@ -328,7 +334,7 @@ body.intro-lock{overflow:hidden}
   if(!card || !textEl || !badgeEl || !noteEl) return;
 
   const states = {
-    preseason:{className:'status-preseason',text:'NOW OPEN',badge:'OPENING SOON',note:'Opening night begins at 6:30 PM on September 25, 2026.'},
+    preseason:{className:'status-preseason',text:'Halloween Show Season Is Running',badge:'SHOW SEASON',note:'Spectral Lights runs nightly from 6:30 PM until 11:00 PM through November 1.'},
     before:{className:'status-preseason',text:'Show Opens Tonight at 6:30 PM',badge:'OPENS TONIGHT',note:'Spectral Lights is scheduled to run tonight from 6:30 PM until 11:00 PM.'},
     open:{className:'status-open',text:'Show Is Running Tonight',badge:'OPEN NOW',note:'Spectral Lights is running now until 11:00 PM. Please remain in your vehicle and do not block neighboring driveways.'},
     closed:{className:'status-off',text:'Show Closed for Tonight',badge:'CLOSED TONIGHT',note:'Tonight’s show has ended. Spectral Lights is scheduled to open again at 6:30 PM on the next show night.'},
